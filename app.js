@@ -336,8 +336,11 @@ function updateDayProgress(sunTimes, lng) {
         progress = (elapsed / dayLength) * 100;
     }
     
-    document.getElementById('dayProgressBar').style.width = `${progress}%`;
-    document.getElementById('dayProgressPercent').textContent = `${Math.round(progress)}%`;
+    const progressBar = document.getElementById('dayProgressBar');
+    const progressText = document.getElementById('dayProgressPercent');
+    console.log('Setting progress:', progress, 'elements:', { progressBar, progressText });
+    if (progressBar) progressBar.style.width = `${progress}%`;
+    if (progressText) progressText.textContent = `${Math.round(progress)}%`;
 }
 
 function updateTimeline(sunTimes) {
