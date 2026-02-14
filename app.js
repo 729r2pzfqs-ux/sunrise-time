@@ -180,22 +180,37 @@ function getSunTimes(date, lat, lng) {
     return results;
 }
 
-function formatTime(date) {
+// Format time in the location's timezone (approximated by longitude)
+// Uses global currentLng if no lng parameter provided
+function formatTime(date, lng) {
     if (!date) return '--:--';
-    return date.toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: false 
-    });
+    
+    // Use provided lng or global currentLng
+    const longitude = lng !== undefined ? lng : (currentLng || 0);
+    
+    // Calculate timezone offset based on longitude (15° = 1 hour)
+    // This gives approximate local solar time
+    const tzOffsetHours = Math.round(longitude / 15);
+    
+    // Get UTC hours and minutes
+    const utcHours = date.getUTCHours();
+    const utcMinutes = date.getUTCMinutes();
+    
+    // Apply timezone offset
+    let localHours = utcHours + tzOffsetHours;
+    if (localHours < 0) localHours += 24;
+    if (localHours >= 24) localHours -= 24;
+    
+    return String(localHours).padStart(2, '0') + ':' + String(utcMinutes).padStart(2, '0');
 }
 
-function formatTime12(date) {
+function formatTime12(date, lng) {
     if (!date) return '--:--';
-    return date.toLocaleTimeString('en-US', { 
-        hour: 'numeric', 
-        minute: '2-digit',
-        hour12: true 
-    });
+    const time24 = formatTime(date, lng);
+    const [hours, minutes] = time24.split(':').map(Number);
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const hours12 = hours % 12 || 12;
+    return `${hours12}:${String(minutes).padStart(2, '0')} ${period}`;
 }
 
 // ============== UI UPDATES ==============
