@@ -160,10 +160,10 @@ function getSunTimes(date, lat, lng) {
         }
         
         const isRise = name.includes('Dawn') || name.includes('sunrise') || name.includes('End') || name === 'goldenHourEnd';
-        const offset = isRise ? -ha * 4 : ha * 4;
+        const offsetMinutes = isRise ? -ha * 4 : ha * 4;
         
-        const eventTime = new Date(solarNoon);
-        eventTime.setMinutes(eventTime.getMinutes() + offset);
+        // Use milliseconds to avoid timezone mixing
+        const eventTime = new Date(solarNoon.getTime() + offsetMinutes * 60 * 1000);
         results[name] = eventTime;
     }
     
