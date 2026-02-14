@@ -219,6 +219,8 @@ function updateSkyGradient(sunTimes) {
     const now = new Date();
     const body = document.getElementById('body');
     const stars = document.getElementById('stars');
+    const clouds = document.getElementById('clouds');
+    const sunRays = document.getElementById('sunRays');
     const sunMoon = document.getElementById('sunMoonEmoji');
     
     body.classList.remove('sky-dawn', 'sky-day', 'sky-golden', 'sky-dusk', 'sky-night');
@@ -234,30 +236,45 @@ function updateSkyGradient(sunTimes) {
     const civilDusk = sunTimes.civilDusk?.getTime() || sunset + 30 * 60000;
     const nowTime = now.getTime();
     
+    // Helper to set element styles safely
+    const setOpacity = (el, val) => { if (el) el.style.opacity = val; };
+    
     if (nowTime < civilDawn || nowTime > civilDusk) {
         body.classList.add('sky-night');
-        stars.style.opacity = '1';
-        sunMoon.textContent = '🌙';
+        setOpacity(stars, '1');
+        setOpacity(clouds, '0');
+        setOpacity(sunRays, '0');
+        if (sunMoon) sunMoon.textContent = '🌙';
     } else if (nowTime < sunrise) {
         body.classList.add('sky-dawn');
-        stars.style.opacity = '0.3';
-        sunMoon.textContent = '🌅';
+        setOpacity(stars, '0.3');
+        setOpacity(clouds, '0.2');
+        setOpacity(sunRays, '0.3');
+        if (sunMoon) sunMoon.textContent = '🌅';
     } else if (nowTime < sunrise + 60 * 60000) {
         body.classList.add('sky-golden');
-        stars.style.opacity = '0';
-        sunMoon.textContent = '🌤️';
+        setOpacity(stars, '0');
+        setOpacity(clouds, '0.4');
+        setOpacity(sunRays, '0.7');
+        if (sunMoon) sunMoon.textContent = '🌤️';
     } else if (nowTime < sunset - 60 * 60000) {
         body.classList.add('sky-day');
-        stars.style.opacity = '0';
-        sunMoon.textContent = '☀️';
+        setOpacity(stars, '0');
+        setOpacity(clouds, '0.5');
+        setOpacity(sunRays, '1');
+        if (sunMoon) sunMoon.textContent = '☀️';
     } else if (nowTime < sunset) {
         body.classList.add('sky-golden');
-        stars.style.opacity = '0';
-        sunMoon.textContent = '🌇';
+        setOpacity(stars, '0');
+        setOpacity(clouds, '0.3');
+        setOpacity(sunRays, '0.5');
+        if (sunMoon) sunMoon.textContent = '🌇';
     } else {
         body.classList.add('sky-dusk');
-        stars.style.opacity = '0.5';
-        sunMoon.textContent = '🌆';
+        setOpacity(stars, '0.5');
+        setOpacity(clouds, '0.1');
+        setOpacity(sunRays, '0.2');
+        if (sunMoon) sunMoon.textContent = '🌆';
     }
 }
 
