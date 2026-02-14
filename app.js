@@ -790,11 +790,12 @@ async function fetchWeather(lat, lng) {
 // ============== MAIN UPDATE FUNCTION ==============
 
 function updateAll(lat, lng, locationName) {
-    updateUI(lat, lng, locationName);
-    updatePrayerTimesUI(lat, lng);
-    updateMoonUI(lat, lng);
-    fetchWeather(lat, lng);
-    updateCurrentTime();
+    console.log('updateAll called:', { lat, lng, locationName });
+    try { updateUI(lat, lng, locationName); console.log('updateUI done'); } catch(e) { console.error('updateUI error:', e); }
+    try { updatePrayerTimesUI(lat, lng); console.log('updatePrayerTimesUI done'); } catch(e) { console.error('updatePrayerTimesUI error:', e); }
+    try { updateMoonUI(lat, lng); console.log('updateMoonUI done'); } catch(e) { console.error('updateMoonUI error:', e); }
+    try { fetchWeather(lat, lng); console.log('fetchWeather called'); } catch(e) { console.error('fetchWeather error:', e); }
+    try { updateCurrentTime(); console.log('updateCurrentTime done'); } catch(e) { console.error('updateCurrentTime error:', e); }
 }
 
 // Init is in init.js (loads last)
