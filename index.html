@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sunrise & Sunset Times Today | SunriseTi.me</title>
-    <meta name="description" content="Get accurate sunrise and sunset times for any location. Golden hour, blue hour, day length, and solar noon. Updated in real-time.">
-    <meta name="keywords" content="sunrise time, sunset time, golden hour, blue hour, solar noon, day length, sun calculator">
+    <title>Sunrise & Sunset Times Today | Prayer Times | Moon Phase | SunriseTi.me</title>
+    <meta name="description" content="Get accurate sunrise, sunset, prayer times, and moon phase for any location. Golden hour, blue hour, day length, Fajr, Dhuhr, Asr, Maghrib, Isha times.">
+    <meta name="keywords" content="sunrise time, sunset time, prayer times, namaz times, salah times, fajr, dhuhr, asr, maghrib, isha, moon phase, golden hour">
     
     <!-- Open Graph -->
-    <meta property="og:title" content="Sunrise & Sunset Times Today">
-    <meta property="og:description" content="Get accurate sunrise and sunset times for any location worldwide.">
+    <meta property="og:title" content="Sunrise, Sunset & Prayer Times Today">
+    <meta property="og:description" content="Accurate sunrise, sunset, Islamic prayer times, and moon phase for any location worldwide.">
     <meta property="og:type" content="website">
     
     <!-- Favicon - Sun icon -->
@@ -20,75 +20,57 @@
     
     <style>
         * { font-family: 'Inter', sans-serif; }
-        
-        /* Dynamic sky gradient - changes based on time */
         .sky-dawn { background: linear-gradient(180deg, #0f0c29 0%, #302b63 30%, #24243e 50%, #ff6b6b 80%, #ffc371 100%); }
         .sky-day { background: linear-gradient(180deg, #2193b0 0%, #6dd5ed 50%, #87CEEB 100%); }
         .sky-golden { background: linear-gradient(180deg, #f5af19 0%, #f12711 50%, #c31432 100%); }
         .sky-dusk { background: linear-gradient(180deg, #0f0c29 0%, #302b63 40%, #544a7d 60%, #ff6b6b 85%, #ffc371 100%); }
         .sky-night { background: linear-gradient(180deg, #0f0c29 0%, #1a1a2e 50%, #16213e 100%); }
         
-        /* Sun/Moon animations */
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         .float { animation: float 3s ease-in-out infinite; }
         
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 40px rgba(255, 200, 50, 0.6); }
-            50% { box-shadow: 0 0 80px rgba(255, 200, 50, 0.9); }
-        }
+        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 40px rgba(255, 200, 50, 0.6); } 50% { box-shadow: 0 0 80px rgba(255, 200, 50, 0.9); } }
         .sun-glow { animation: pulse-glow 2s ease-in-out infinite; }
         
-        /* Timeline styling */
-        .timeline-item { position: relative; }
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: 24px;
-            top: 48px;
-            width: 2px;
-            height: calc(100% - 24px);
-            background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 100%);
-        }
-        .timeline-item:last-child::before { display: none; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+        .twinkle { animation: twinkle 2s ease-in-out infinite; }
         
-        /* Glass morphism cards */
-        .glass {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
+        .glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .glass-dark { background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .day-progress { background: linear-gradient(90deg, #ffd700 0%, #ff8c00 50%, #ff6b6b 100%); }
         
-        /* Progress bar for day */
-        .day-progress {
-            background: linear-gradient(90deg, #ffd700 0%, #ff8c00 50%, #ff6b6b 100%);
-        }
+        .prayer-card { transition: all 0.3s; }
+        .prayer-card.next { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%); border-color: rgba(16, 185, 129, 0.5); }
+        .prayer-card.passed { opacity: 0.5; }
+        
+        /* Search autocomplete */
+        .autocomplete-results { position: absolute; top: 100%; left: 0; right: 0; z-index: 50; }
+        .autocomplete-item:hover { background: rgba(255,255,255,0.1); }
     </style>
 </head>
 <body class="min-h-screen sky-day text-white transition-all duration-1000" id="body">
-    <!-- Stars (visible at night) -->
+    <!-- Stars -->
     <div id="stars" class="fixed inset-0 pointer-events-none opacity-0 transition-opacity duration-1000">
-        <div class="absolute w-1 h-1 bg-white rounded-full" style="top: 10%; left: 20%;"></div>
-        <div class="absolute w-1 h-1 bg-white rounded-full" style="top: 15%; left: 80%;"></div>
-        <div class="absolute w-1 h-1 bg-white rounded-full" style="top: 5%; left: 50%;"></div>
-        <div class="absolute w-2 h-2 bg-white rounded-full opacity-50" style="top: 20%; left: 30%;"></div>
-        <div class="absolute w-1 h-1 bg-white rounded-full" style="top: 8%; left: 70%;"></div>
-        <div class="absolute w-1 h-1 bg-white rounded-full" style="top: 25%; left: 10%;"></div>
-        <div class="absolute w-2 h-2 bg-white rounded-full opacity-30" style="top: 12%; left: 90%;"></div>
+        <div class="absolute w-1 h-1 bg-white rounded-full twinkle" style="top: 10%; left: 20%; animation-delay: 0s;"></div>
+        <div class="absolute w-1 h-1 bg-white rounded-full twinkle" style="top: 15%; left: 80%; animation-delay: 0.5s;"></div>
+        <div class="absolute w-1 h-1 bg-white rounded-full twinkle" style="top: 5%; left: 50%; animation-delay: 1s;"></div>
+        <div class="absolute w-2 h-2 bg-white rounded-full twinkle" style="top: 20%; left: 30%; animation-delay: 1.5s;"></div>
+        <div class="absolute w-1 h-1 bg-white rounded-full twinkle" style="top: 8%; left: 70%; animation-delay: 0.3s;"></div>
+        <div class="absolute w-1 h-1 bg-white rounded-full twinkle" style="top: 25%; left: 10%; animation-delay: 0.8s;"></div>
+        <div class="absolute w-2 h-2 bg-white rounded-full twinkle" style="top: 12%; left: 90%; animation-delay: 1.2s;"></div>
+        <div class="absolute w-1 h-1 bg-white rounded-full twinkle" style="top: 18%; left: 45%; animation-delay: 0.7s;"></div>
+        <div class="absolute w-1 h-1 bg-white rounded-full twinkle" style="top: 22%; left: 65%; animation-delay: 1.8s;"></div>
     </div>
 
     <div class="relative z-10">
         <!-- Header -->
         <header class="py-4 px-4">
-            <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="max-w-5xl mx-auto flex items-center justify-between">
                 <a href="/" class="flex items-center gap-2">
                     <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-300 to-orange-500 sun-glow"></div>
                     <span class="text-xl font-bold">SunriseTi<span class="text-yellow-300">.me</span></span>
                 </a>
                 <div class="flex items-center gap-3">
-                    <!-- Language dropdown -->
                     <div class="relative group">
                         <button class="flex items-center gap-1 text-white/70 hover:text-white text-sm">
                             <span id="currentLang">🇺🇸</span>
@@ -98,11 +80,11 @@
                             <a href="/" class="block px-3 py-2 text-sm hover:bg-white/10 rounded-t-lg">🇺🇸 English</a>
                             <a href="/zh/" class="block px-3 py-2 text-sm hover:bg-white/10">🇨🇳 中文</a>
                             <a href="/hi/" class="block px-3 py-2 text-sm hover:bg-white/10">🇮🇳 हिन्दी</a>
+                            <a href="/ar/" class="block px-3 py-2 text-sm hover:bg-white/10">🇸🇦 العربية</a>
+                            <a href="/id/" class="block px-3 py-2 text-sm hover:bg-white/10">🇮🇩 Indonesia</a>
                             <a href="/de/" class="block px-3 py-2 text-sm hover:bg-white/10">🇩🇪 Deutsch</a>
                             <a href="/es/" class="block px-3 py-2 text-sm hover:bg-white/10">🇪🇸 Español</a>
                             <a href="/fr/" class="block px-3 py-2 text-sm hover:bg-white/10">🇫🇷 Français</a>
-                            <a href="/ar/" class="block px-3 py-2 text-sm hover:bg-white/10">🇸🇦 العربية</a>
-                            <a href="/id/" class="block px-3 py-2 text-sm hover:bg-white/10">🇮🇩 Indonesia</a>
                             <a href="/pt/" class="block px-3 py-2 text-sm hover:bg-white/10">🇧🇷 Português</a>
                             <a href="/ru/" class="block px-3 py-2 text-sm hover:bg-white/10">🇷🇺 Русский</a>
                             <a href="/ja/" class="block px-3 py-2 text-sm hover:bg-white/10">🇯🇵 日本語</a>
@@ -115,54 +97,51 @@
 
         <!-- Main Content -->
         <main class="px-4 pb-12">
-            <div class="max-w-4xl mx-auto">
+            <div class="max-w-5xl mx-auto">
                 
-                <!-- Hero Section with Sun -->
-                <section class="text-center py-8">
-                    <!-- Animated Sun -->
-                    <div class="relative inline-block mb-6">
-                        <div class="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gradient-to-br from-yellow-200 via-yellow-400 to-orange-500 sun-glow float mx-auto"></div>
+                <!-- Hero Section -->
+                <section class="text-center py-6">
+                    <div class="relative inline-block mb-4">
+                        <div class="w-28 h-28 md:w-36 md:h-36 rounded-full bg-gradient-to-br from-yellow-200 via-yellow-400 to-orange-500 sun-glow float mx-auto"></div>
                         <div class="absolute inset-0 flex items-center justify-center">
                             <span class="text-4xl md:text-5xl" id="sunMoonEmoji">☀️</span>
                         </div>
                     </div>
                     
-                    <!-- Location -->
-                    <div class="mb-4">
-                        <div class="inline-flex items-center gap-2 glass px-4 py-2 rounded-full">
-                            <svg class="w-5 h-5 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <!-- Location & Search -->
+                    <div class="mb-3 relative max-w-md mx-auto">
+                        <div class="inline-flex items-center gap-2 glass px-4 py-2 rounded-full w-full">
+                            <svg class="w-5 h-5 text-yellow-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                             </svg>
-                            <span id="locationName" class="font-medium">Detecting location...</span>
-                            <button id="changeLocation" class="text-yellow-300 hover:text-yellow-100 ml-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                            <input type="text" id="locationSearch" class="bg-transparent border-none outline-none flex-1 text-center placeholder-white/50" placeholder="Search city..." value="">
+                            <button id="detectLocation" class="text-yellow-300 hover:text-yellow-100">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
                             </button>
                         </div>
+                        <!-- Autocomplete results -->
+                        <div id="autocompleteResults" class="autocomplete-results hidden glass-dark rounded-lg mt-1 overflow-hidden"></div>
                     </div>
                     
-                    <!-- Date -->
-                    <p class="text-white/60 text-sm mb-6" id="currentDate">Loading...</p>
+                    <p class="text-white/60 text-sm mb-4" id="currentDate">Loading...</p>
                     
-                    <!-- Main Times Display -->
-                    <div class="grid grid-cols-2 gap-4 md:gap-8 max-w-lg mx-auto mb-8">
-                        <!-- Sunrise -->
-                        <div class="glass rounded-2xl p-6 text-center">
-                            <div class="text-4xl mb-2">🌅</div>
-                            <p class="text-white/60 text-sm uppercase tracking-wider mb-1">Sunrise</p>
-                            <p class="text-3xl md:text-4xl font-bold text-yellow-300" id="sunriseTime">--:--</p>
+                    <!-- Main Times -->
+                    <div class="grid grid-cols-2 gap-3 md:gap-6 max-w-md mx-auto mb-6">
+                        <div class="glass rounded-2xl p-4 md:p-6 text-center">
+                            <div class="text-3xl mb-1">🌅</div>
+                            <p class="text-white/60 text-xs uppercase tracking-wider mb-1">Sunrise</p>
+                            <p class="text-2xl md:text-3xl font-bold text-yellow-300" id="sunriseTime">--:--</p>
                         </div>
-                        
-                        <!-- Sunset -->
-                        <div class="glass rounded-2xl p-6 text-center">
-                            <div class="text-4xl mb-2">🌇</div>
-                            <p class="text-white/60 text-sm uppercase tracking-wider mb-1">Sunset</p>
-                            <p class="text-3xl md:text-4xl font-bold text-orange-400" id="sunsetTime">--:--</p>
+                        <div class="glass rounded-2xl p-4 md:p-6 text-center">
+                            <div class="text-3xl mb-1">🌇</div>
+                            <p class="text-white/60 text-xs uppercase tracking-wider mb-1">Sunset</p>
+                            <p class="text-2xl md:text-3xl font-bold text-orange-400" id="sunsetTime">--:--</p>
                         </div>
                     </div>
                     
                     <!-- Day Progress -->
-                    <div class="max-w-lg mx-auto mb-8">
+                    <div class="max-w-md mx-auto mb-6">
                         <div class="flex justify-between text-xs text-white/60 mb-1">
                             <span>Day Progress</span>
                             <span id="dayProgressPercent">0%</span>
@@ -170,120 +149,146 @@
                         <div class="h-2 bg-white/10 rounded-full overflow-hidden">
                             <div class="h-full day-progress rounded-full transition-all duration-500" id="dayProgressBar" style="width: 0%"></div>
                         </div>
-                        <div class="flex justify-between text-xs text-white/40 mt-1">
-                            <span id="sunriseTimeSmall">--:--</span>
-                            <span id="sunsetTimeSmall">--:--</span>
+                    </div>
+                </section>
+
+                <!-- Prayer Times Section -->
+                <section class="glass rounded-2xl p-5 mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold flex items-center gap-2">
+                            <span>🕌</span> Prayer Times
+                        </h2>
+                        <select id="prayerMethod" class="bg-white/10 border border-white/20 rounded-lg px-2 py-1 text-sm">
+                            <option value="ISNA">ISNA</option>
+                            <option value="MWL">Muslim World League</option>
+                            <option value="EGYPT">Egypt</option>
+                            <option value="MAKKAH">Umm al-Qura</option>
+                            <option value="KARACHI">Karachi</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-3 md:grid-cols-6 gap-2" id="prayerTimesGrid">
+                        <!-- Prayer times will be populated by JS -->
+                    </div>
+                    <p class="text-white/40 text-xs mt-3 text-center" id="nextPrayerInfo">Loading...</p>
+                </section>
+
+                <!-- Moon Phase Section -->
+                <section class="glass rounded-2xl p-5 mb-6">
+                    <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <span>🌙</span> Moon Phase
+                    </h2>
+                    <div class="flex flex-col md:flex-row items-center gap-6">
+                        <div class="text-center">
+                            <div class="text-6xl mb-2" id="moonEmoji">🌕</div>
+                            <p class="font-semibold" id="moonPhaseName">Full Moon</p>
+                            <p class="text-white/60 text-sm" id="moonIllumination">100% illuminated</p>
+                        </div>
+                        <div class="flex-1 grid grid-cols-2 gap-4">
+                            <div class="glass-dark rounded-xl p-3 text-center">
+                                <p class="text-white/60 text-xs">Next Full Moon</p>
+                                <p class="font-semibold" id="nextFullMoon">--</p>
+                            </div>
+                            <div class="glass-dark rounded-xl p-3 text-center">
+                                <p class="text-white/60 text-xs">Next New Moon</p>
+                                <p class="font-semibold" id="nextNewMoon">--</p>
+                            </div>
+                            <div class="glass-dark rounded-xl p-3 text-center">
+                                <p class="text-white/60 text-xs">Moonrise</p>
+                                <p class="font-semibold" id="moonrise">--:--</p>
+                            </div>
+                            <div class="glass-dark rounded-xl p-3 text-center">
+                                <p class="text-white/60 text-xs">Moonset</p>
+                                <p class="font-semibold" id="moonset">--:--</p>
+                            </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- Detailed Info Cards -->
-                <section class="grid md:grid-cols-2 gap-4 mb-8">
-                    <!-- Day Length -->
-                    <div class="glass rounded-2xl p-5">
-                        <div class="flex items-center gap-3 mb-3">
+                <!-- Sun Details Grid -->
+                <section class="grid md:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+                    <div class="glass rounded-2xl p-4">
+                        <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center">⏱️</div>
                             <div>
-                                <p class="text-white/60 text-sm">Day Length</p>
-                                <p class="text-xl font-semibold" id="dayLength">--h --m</p>
+                                <p class="text-white/60 text-xs">Day Length</p>
+                                <p class="text-lg font-semibold" id="dayLength">--h --m</p>
                             </div>
                         </div>
-                        <p class="text-white/50 text-sm" id="dayLengthChange">-- compared to yesterday</p>
                     </div>
-                    
-                    <!-- Solar Noon -->
-                    <div class="glass rounded-2xl p-5">
-                        <div class="flex items-center gap-3 mb-3">
+                    <div class="glass rounded-2xl p-4">
+                        <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center">🔆</div>
                             <div>
-                                <p class="text-white/60 text-sm">Solar Noon</p>
-                                <p class="text-xl font-semibold" id="solarNoon">--:--</p>
+                                <p class="text-white/60 text-xs">Solar Noon</p>
+                                <p class="text-lg font-semibold" id="solarNoon">--:--</p>
                             </div>
                         </div>
-                        <p class="text-white/50 text-sm">Sun at highest point</p>
                     </div>
-                    
-                    <!-- Golden Hour Morning -->
-                    <div class="glass rounded-2xl p-5">
-                        <div class="flex items-center gap-3 mb-3">
+                    <div class="glass rounded-2xl p-4">
+                        <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">📸</div>
                             <div>
-                                <p class="text-white/60 text-sm">Golden Hour (AM)</p>
-                                <p class="text-xl font-semibold" id="goldenMorning">--:-- - --:--</p>
+                                <p class="text-white/60 text-xs">Golden Hour AM</p>
+                                <p class="text-lg font-semibold" id="goldenMorning">--:--</p>
                             </div>
                         </div>
-                        <p class="text-white/50 text-sm">Best light for photography</p>
                     </div>
-                    
-                    <!-- Golden Hour Evening -->
-                    <div class="glass rounded-2xl p-5">
-                        <div class="flex items-center gap-3 mb-3">
+                    <div class="glass rounded-2xl p-4">
+                        <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">🌄</div>
                             <div>
-                                <p class="text-white/60 text-sm">Golden Hour (PM)</p>
-                                <p class="text-xl font-semibold" id="goldenEvening">--:-- - --:--</p>
+                                <p class="text-white/60 text-xs">Golden Hour PM</p>
+                                <p class="text-lg font-semibold" id="goldenEvening">--:--</p>
                             </div>
                         </div>
-                        <p class="text-white/50 text-sm">Best light for photography</p>
-                    </div>
-                </section>
-
-                <!-- Timeline -->
-                <section class="glass rounded-2xl p-6 mb-8">
-                    <h2 class="text-lg font-semibold mb-6 flex items-center gap-2">
-                        <span>📅</span> Today's Sun Timeline
-                    </h2>
-                    <div class="space-y-4" id="timeline">
-                        <!-- Timeline items will be populated by JS -->
                     </div>
                 </section>
 
                 <!-- 7-Day Forecast -->
-                <section class="glass rounded-2xl p-6 mb-8">
-                    <h2 class="text-lg font-semibold mb-6 flex items-center gap-2">
+                <section class="glass rounded-2xl p-5 mb-6">
+                    <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
                         <span>📆</span> 7-Day Forecast
                     </h2>
-                    <div class="overflow-x-auto">
-                        <div class="grid grid-cols-7 gap-2 min-w-[600px]" id="forecast">
-                            <!-- Forecast items will be populated by JS -->
-                        </div>
+                    <div class="overflow-x-auto -mx-2 px-2">
+                        <div class="grid grid-cols-7 gap-2 min-w-[560px]" id="forecast"></div>
                     </div>
                 </section>
 
-                <!-- Search Other Cities -->
-                <section class="glass rounded-2xl p-6">
+                <!-- Popular Cities -->
+                <section class="glass rounded-2xl p-5">
                     <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-                        <span>🔍</span> Search Any City
+                        <span>🌍</span> Popular Cities
                     </h2>
-                    <div class="flex gap-2">
-                        <input type="text" id="citySearch" placeholder="Enter city name..." class="flex-1 bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-yellow-400">
-                        <button id="searchBtn" class="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-semibold px-6 py-3 rounded-lg hover:from-yellow-300 hover:to-orange-400 transition">
-                            Search
-                        </button>
-                    </div>
-                    <!-- Popular cities -->
-                    <div class="mt-4 flex flex-wrap gap-2">
-                        <span class="text-white/40 text-sm">Popular:</span>
-                        <button class="city-btn text-sm text-yellow-300 hover:text-yellow-100" data-lat="40.7128" data-lng="-74.0060">New York</button>
-                        <button class="city-btn text-sm text-yellow-300 hover:text-yellow-100" data-lat="51.5074" data-lng="-0.1278">London</button>
-                        <button class="city-btn text-sm text-yellow-300 hover:text-yellow-100" data-lat="35.6762" data-lng="139.6503">Tokyo</button>
-                        <button class="city-btn text-sm text-yellow-300 hover:text-yellow-100" data-lat="48.8566" data-lng="2.3522">Paris</button>
-                        <button class="city-btn text-sm text-yellow-300 hover:text-yellow-100" data-lat="-33.8688" data-lng="151.2093">Sydney</button>
-                        <button class="city-btn text-sm text-yellow-300 hover:text-yellow-100" data-lat="25.2048" data-lng="55.2708">Dubai</button>
+                    <div class="flex flex-wrap gap-2" id="popularCities">
+                        <button class="city-btn glass-dark px-3 py-2 rounded-lg text-sm hover:bg-white/10 transition" data-lat="40.7128" data-lng="-74.0060">New York</button>
+                        <button class="city-btn glass-dark px-3 py-2 rounded-lg text-sm hover:bg-white/10 transition" data-lat="51.5074" data-lng="-0.1278">London</button>
+                        <button class="city-btn glass-dark px-3 py-2 rounded-lg text-sm hover:bg-white/10 transition" data-lat="35.6762" data-lng="139.6503">Tokyo</button>
+                        <button class="city-btn glass-dark px-3 py-2 rounded-lg text-sm hover:bg-white/10 transition" data-lat="48.8566" data-lng="2.3522">Paris</button>
+                        <button class="city-btn glass-dark px-3 py-2 rounded-lg text-sm hover:bg-white/10 transition" data-lat="25.2048" data-lng="55.2708">Dubai</button>
+                        <button class="city-btn glass-dark px-3 py-2 rounded-lg text-sm hover:bg-white/10 transition" data-lat="-33.8688" data-lng="151.2093">Sydney</button>
+                        <button class="city-btn glass-dark px-3 py-2 rounded-lg text-sm hover:bg-white/10 transition" data-lat="21.3891" data-lng="39.8579">Mecca</button>
+                        <button class="city-btn glass-dark px-3 py-2 rounded-lg text-sm hover:bg-white/10 transition" data-lat="31.9454" data-lng="35.9284">Amman</button>
+                        <button class="city-btn glass-dark px-3 py-2 rounded-lg text-sm hover:bg-white/10 transition" data-lat="30.0444" data-lng="31.2357">Cairo</button>
+                        <button class="city-btn glass-dark px-3 py-2 rounded-lg text-sm hover:bg-white/10 transition" data-lat="-6.2088" data-lng="106.8456">Jakarta</button>
+                        <button class="city-btn glass-dark px-3 py-2 rounded-lg text-sm hover:bg-white/10 transition" data-lat="3.1390" data-lng="101.6869">Kuala Lumpur</button>
+                        <button class="city-btn glass-dark px-3 py-2 rounded-lg text-sm hover:bg-white/10 transition" data-lat="41.0082" data-lng="28.9784">Istanbul</button>
                     </div>
                 </section>
             </div>
         </main>
 
         <!-- Footer -->
-        <footer class="py-8 px-4 border-t border-white/10">
-            <div class="max-w-4xl mx-auto text-center text-white/40 text-sm">
-                <p>© 2026 SunriseTi.me — Accurate sunrise & sunset times worldwide</p>
-                <p class="mt-2">Data calculated using solar position algorithms</p>
+        <footer class="py-6 px-4 border-t border-white/10">
+            <div class="max-w-5xl mx-auto text-center text-white/40 text-sm">
+                <p>© 2026 SunriseTi.me — Accurate sunrise, sunset & prayer times worldwide</p>
+                <p class="mt-1">Solar calculations based on NOAA algorithms • Prayer times: ISNA method</p>
             </div>
         </footer>
     </div>
 
+    <script src="cities.js"></script>
+    <script src="moon.js"></script>
+    <script src="prayer.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

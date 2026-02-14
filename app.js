@@ -440,16 +440,26 @@ async function detectLocation() {
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
                 const name = await getLocationName(lat, lng);
+                const input = document.getElementById('locationSearch');
+                if (input) input.value = name || '';
                 updateUI(lat, lng, name);
+                updatePrayerTimesUI(lat, lng);
+                updateMoonUI(lat, lng);
             },
             (error) => {
                 // Fallback to IP-based location or default
                 console.log('Geolocation denied, using default');
-                updateUI(51.5074, -0.1278, 'London, UK'); // Default to London
+                const input = document.getElementById('locationSearch');
+                if (input) input.value = 'London, UK';
+                updateUI(51.5074, -0.1278, 'London, UK');
+                updatePrayerTimesUI(51.5074, -0.1278);
+                updateMoonUI(51.5074, -0.1278);
             }
         );
     } else {
         updateUI(51.5074, -0.1278, 'London, UK');
+        updatePrayerTimesUI(51.5074, -0.1278);
+        updateMoonUI(51.5074, -0.1278);
     }
 }
 
@@ -470,8 +480,175 @@ async function searchCity(query) {
 
 // ============== EVENT LISTENERS ==============
 
+// ============== PRAYER TIMES UI ==============
+
+function updatePrayerTimesUI(lat, lng) {
+    const today = new Date();
+    const method = document.getElementById('prayerMethod')?.value || 'ISNA';
+    const prayerTimes = getPrayerTimes(today, lat, lng, method);
+    
+    if (!prayerTimes) return;
+    
+    const prayers = [
+        { key: 'fajr', name: 'Fajr', icon: '🌙' },
+        { key: 'sunrise', name: 'Sunrise', icon: '🌅' },
+        { key: 'dhuhr', name: 'Dhuhr', icon: '☀️' },
+        { key: 'asr', name: 'Asr', icon: '🌤️' },
+        { key: 'maghrib', name: 'Maghrib', icon: '🌇' },
+        { key: 'isha', name: 'Isha', icon: '🌙' }
+    ];
+    
+    const now = new Date();
+    const grid = document.getElementById('prayerTimesGrid');
+    if (!grid) return;
+    
+    grid.innerHTML = prayers.map(prayer => {
+        const time = prayerTimes[prayer.key];
+        const isPassed = time && time < now;
+        const isNext = !isPassed && prayers.findIndex(p => prayerTimes[p.key] && prayerTimes[p.key] > now) === prayers.indexOf(prayer);
+        
+        return `
+            <div class="prayer-card glass-dark rounded-xl p-3 text-center ${isPassed ? 'passed' : ''} ${isNext ? 'next' : ''}">
+                <div class="text-xl mb-1">${prayer.icon}</div>
+                <p class="text-xs text-white/60 mb-1">${prayer.name}</p>
+                <p class="font-semibold text-sm">${formatPrayerTime(time)}</p>
+            </div>
+        `;
+    }).join('');
+    
+    // Next prayer info
+    const next = getNextPrayer(prayerTimes);
+    const nextInfo = document.getElementById('nextPrayerInfo');
+    if (nextInfo && next.time) {
+        nextInfo.textContent = `Next: ${next.name.charAt(0).toUpperCase() + next.name.slice(1)} in ${formatTimeRemaining(next.remaining)}`;
+    }
+}
+
+// ============== MOON PHASE UI ==============
+
+function updateMoonUI(lat, lng) {
+    const today = new Date();
+    const moon = getMoonPhase(today);
+    const moonTimes = getMoonTimes(today, lat, lng);
+    
+    document.getElementById('moonEmoji').textContent = moon.emoji;
+    document.getElementById('moonPhaseName').textContent = moon.phaseName;
+    document.getElementById('moonIllumination').textContent = `${moon.illumination}% illuminated`;
+    
+    // Upcoming events
+    const events = getUpcomingLunarEvents(today, 2);
+    const fullMoon = events.find(e => e.type === 'Full Moon');
+    const newMoon = events.find(e => e.type === 'New Moon');
+    
+    if (fullMoon) {
+        document.getElementById('nextFullMoon').textContent = fullMoon.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+    if (newMoon) {
+        document.getElementById('nextNewMoon').textContent = newMoon.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+    
+    document.getElementById('moonrise').textContent = formatTime(moonTimes.moonrise);
+    document.getElementById('moonset').textContent = formatTime(moonTimes.moonset);
+}
+
+// ============== CITY SEARCH WITH AUTOCOMPLETE ==============
+
+let searchTimeout = null;
+
+function setupCitySearch() {
+    const input = document.getElementById('locationSearch');
+    const results = document.getElementById('autocompleteResults');
+    
+    if (!input || !results) return;
+    
+    input.addEventListener('input', (e) => {
+        const query = e.target.value;
+        
+        clearTimeout(searchTimeout);
+        
+        if (query.length < 2) {
+            results.classList.add('hidden');
+            return;
+        }
+        
+        searchTimeout = setTimeout(() => {
+            // First search local cities
+            const localResults = searchCities(query);
+            
+            if (localResults.length > 0) {
+                results.innerHTML = localResults.map(city => `
+                    <div class="autocomplete-item px-4 py-2 cursor-pointer" data-lat="${city.lat}" data-lng="${city.lng}" data-name="${city.display}">
+                        <span class="text-yellow-300">📍</span> ${city.display}
+                    </div>
+                `).join('');
+                results.classList.remove('hidden');
+            } else {
+                // Fall back to API search
+                searchCityAPI(query);
+            }
+        }, 300);
+    });
+    
+    // Handle click on result
+    results.addEventListener('click', (e) => {
+        const item = e.target.closest('.autocomplete-item');
+        if (item) {
+            const lat = parseFloat(item.dataset.lat);
+            const lng = parseFloat(item.dataset.lng);
+            const name = item.dataset.name;
+            
+            input.value = name;
+            results.classList.add('hidden');
+            updateUI(lat, lng, name);
+        }
+    });
+    
+    // Hide on blur
+    input.addEventListener('blur', () => {
+        setTimeout(() => results.classList.add('hidden'), 200);
+    });
+    
+    // Search on Enter
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            results.classList.add('hidden');
+            searchCity(input.value);
+        }
+    });
+}
+
+async function searchCityAPI(query) {
+    const results = document.getElementById('autocompleteResults');
+    try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5`);
+        const data = await response.json();
+        
+        if (data.length > 0) {
+            results.innerHTML = data.map(place => `
+                <div class="autocomplete-item px-4 py-2 cursor-pointer" data-lat="${place.lat}" data-lng="${place.lon}" data-name="${place.display_name.split(',').slice(0,2).join(',')}">
+                    <span class="text-yellow-300">📍</span> ${place.display_name.split(',').slice(0,3).join(',')}
+                </div>
+            `).join('');
+            results.classList.remove('hidden');
+        }
+    } catch (e) {
+        console.error('Search failed:', e);
+    }
+}
+
+// ============== MAIN UPDATE FUNCTION ==============
+
+function updateAll(lat, lng, locationName) {
+    updateUI(lat, lng, locationName);
+    updatePrayerTimesUI(lat, lng);
+    updateMoonUI(lat, lng);
+}
+
+// ============== INIT ==============
+
 document.addEventListener('DOMContentLoaded', () => {
     detectLocation();
+    setupCitySearch();
     
     // Update every minute
     setInterval(() => {
@@ -479,28 +656,28 @@ document.addEventListener('DOMContentLoaded', () => {
             const sunTimes = getSunTimes(new Date(), currentLat, currentLng);
             updateSkyGradient(sunTimes);
             updateDayProgress(sunTimes);
+            updatePrayerTimesUI(currentLat, currentLng);
         }
     }, 60000);
     
-    // Search functionality
-    document.getElementById('searchBtn').addEventListener('click', () => {
-        const query = document.getElementById('citySearch').value;
-        if (query) searchCity(query);
-    });
-    
-    document.getElementById('citySearch').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            const query = document.getElementById('citySearch').value;
-            if (query) searchCity(query);
+    // Prayer method change
+    document.getElementById('prayerMethod')?.addEventListener('change', () => {
+        if (currentLat && currentLng) {
+            updatePrayerTimesUI(currentLat, currentLng);
         }
     });
+    
+    // Detect location button
+    document.getElementById('detectLocation')?.addEventListener('click', detectLocation);
     
     // Popular city buttons
     document.querySelectorAll('.city-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const lat = parseFloat(btn.dataset.lat);
             const lng = parseFloat(btn.dataset.lng);
-            updateUI(lat, lng, btn.textContent);
+            const name = btn.textContent.trim();
+            document.getElementById('locationSearch').value = name;
+            updateAll(lat, lng, name);
         });
     });
 });
