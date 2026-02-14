@@ -315,17 +315,22 @@ function updateDayProgress(sunTimes, lng) {
     // City's current hour
     const cityH = (now.getUTCHours() + tzOffset + 24) % 24 + now.getUTCMinutes() / 60;
     
-    // Sunrise/sunset hours
+    // Sunrise/sunset hours - use formatTime logic
     const sunriseH = (sunTimes.sunrise.getUTCHours() + tzOffset + 24) % 24 + sunTimes.sunrise.getUTCMinutes() / 60;
     const sunsetH = (sunTimes.sunset.getUTCHours() + tzOffset + 24) % 24 + sunTimes.sunset.getUTCMinutes() / 60;
     
+    console.log('Progress debug:', { cityH, sunriseH, sunsetH, tzOffset, lng });
+    
     let progress = 0;
-    if (cityH <= sunriseH) {
+    const dayLength = sunsetH - sunriseH;
+    const elapsed = cityH - sunriseH;
+    
+    if (elapsed <= 0) {
         progress = 0;
-    } else if (cityH >= sunsetH) {
+    } else if (elapsed >= dayLength) {
         progress = 100;
     } else {
-        progress = ((cityH - sunriseH) / (sunsetH - sunriseH)) * 100;
+        progress = (elapsed / dayLength) * 100;
     }
     
     document.getElementById('dayProgressBar').style.width = `${progress}%`;
@@ -750,11 +755,15 @@ async function fetchWeather(lat, lng) {
     const tempEl = document.getElementById('currentTemp');
     const weatherEl = document.getElementById('weatherIcon');
     
-    if (!tempEl) return;
+    console.log('fetchWeather called:', { lat, lng });
+    if (!tempEl) { console.log('No tempEl found'); return; }
     
     try {
-        const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,weather_code&timezone=auto`);
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,weather_code&timezone=auto`;
+        console.log('Fetching weather:', url);
+        const response = await fetch(url);
         const data = await response.json();
+        console.log('Weather response:', data);
         
         if (data.current) {
             const temp = Math.round(data.current.temperature_2m);
