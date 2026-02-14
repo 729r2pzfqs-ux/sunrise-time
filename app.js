@@ -677,12 +677,71 @@ async function searchCityAPI(query) {
     }
 }
 
+// ============== CURRENT TIME ==============
+
+function updateCurrentTime() {
+    const timeEl = document.getElementById('currentTime');
+    if (!timeEl || currentLng === null) return;
+    
+    // Calculate local time based on longitude
+    const now = new Date();
+    const tzOffsetHours = Math.round(currentLng / 15);
+    let localHours = now.getUTCHours() + tzOffsetHours;
+    if (localHours < 0) localHours += 24;
+    if (localHours >= 24) localHours -= 24;
+    
+    const h = String(localHours).padStart(2, '0');
+    const m = String(now.getUTCMinutes()).padStart(2, '0');
+    const s = String(now.getUTCSeconds()).padStart(2, '0');
+    
+    timeEl.textContent = `${h}:${m}:${s}`;
+}
+
+// Start clock
+setInterval(updateCurrentTime, 1000);
+
+// ============== WEATHER ==============
+
+async function fetchWeather(lat, lng) {
+    const tempEl = document.getElementById('currentTemp');
+    const weatherEl = document.getElementById('weatherIcon');
+    
+    if (!tempEl) return;
+    
+    try {
+        const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,weather_code&timezone=auto`);
+        const data = await response.json();
+        
+        if (data.current) {
+            const temp = Math.round(data.current.temperature_2m);
+            tempEl.textContent = `${temp}°C`;
+            
+            // Weather code to emoji
+            const code = data.current.weather_code;
+            let emoji = '☀️';
+            if (code === 0) emoji = '☀️';
+            else if (code <= 3) emoji = '⛅';
+            else if (code <= 49) emoji = '🌫️';
+            else if (code <= 69) emoji = '🌧️';
+            else if (code <= 79) emoji = '🌨️';
+            else if (code <= 99) emoji = '⛈️';
+            
+            if (weatherEl) weatherEl.textContent = emoji;
+        }
+    } catch (e) {
+        console.error('Weather fetch failed:', e);
+        tempEl.textContent = '--°C';
+    }
+}
+
 // ============== MAIN UPDATE FUNCTION ==============
 
 function updateAll(lat, lng, locationName) {
     updateUI(lat, lng, locationName);
     updatePrayerTimesUI(lat, lng);
     updateMoonUI(lat, lng);
+    fetchWeather(lat, lng);
+    updateCurrentTime();
 }
 
 // Init is in init.js (loads last)
