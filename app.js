@@ -216,7 +216,6 @@ function formatTime12(date, lng) {
 // ============== UI UPDATES ==============
 
 function updateSkyGradient(sunTimes, lng) {
-    const now = new Date();
     const body = document.getElementById('body');
     const stars = document.getElementById('stars');
     const clouds = document.getElementById('clouds');
@@ -230,80 +229,110 @@ function updateSkyGradient(sunTimes, lng) {
         return;
     }
     
-    const sunrise = sunTimes.sunrise.getTime();
-    const sunset = sunTimes.sunset.getTime();
-    const civilDawn = sunTimes.civilDawn?.getTime() || sunrise - 30 * 60000;
-    const civilDusk = sunTimes.civilDusk?.getTime() || sunset + 30 * 60000;
-    const nowTime = now.getTime();
+    // Get city's current time (convert browser time to city's timezone based on longitude)
+    const now = new Date();
+    const tzOffsetMs = Math.round(lng / 15) * 60 * 60 * 1000;
+    const browserOffsetMs = now.getTimezoneOffset() * 60 * 1000;
+    const cityNowMs = now.getTime() + browserOffsetMs + tzOffsetMs;
     
-    // Debug: log times to console
-    console.log('Sky gradient debug:', {
-        now: new Date(nowTime).toISOString(),
-        sunrise: new Date(sunrise).toISOString(),
-        sunset: new Date(sunset).toISOString(),
-        civilDawn: new Date(civilDawn).toISOString(),
-        civilDusk: new Date(civilDusk).toISOString(),
-        isAfterDawn: nowTime >= civilDawn,
-        isBeforeDusk: nowTime <= civilDusk
-    });
+    // Get hours in city's local time (0-24)
+    const cityHours = new Date(cityNowMs).getUTCHours() + new Date(cityNowMs).getUTCMinutes() / 60;
     
-    // Helper to set element styles safely
-    const setOpacity = (el, val) => { if (el) el.style.opacity = val; };
+    // Get sunrise/sunset in city's local hours
+    const sunriseHours = sunTimes.sunrise.getUTCHours() + Math.round(lng / 15) + sunTimes.sunrise.getUTCMinutes() / 60;
+    const sunsetHours = sunTimes.sunset.getUTCHours() + Math.round(lng / 15) + sunTimes.sunset.getUTCMinutes() / 60;
+    const dawnHours = sunriseHours - 0.5; // 30 min before sunrise
+    const duskHours = sunsetHours + 0.5;  // 30 min after sunset
     
-    if (nowTime < civilDawn || nowTime > civilDusk) {
+    // Normalize hours to 0-24 range
+    const normHours = (h) => ((h % 24) + 24) % 24;
+    const cityH = normHours(cityHours);
+    const sunriseH = normHours(sunriseHours);
+    const sunsetH = normHours(sunsetHours);
+    const dawnH = normHours(dawnHours);
+    const duskH = normHours(duskHours);
+    
+    // Determine sky state based on city's local hour
+    const isNight = cityH < dawnH || cityH > duskH;
+    const isDawn = cityH >= dawnH && cityH < sunriseH;
+    const isMorningGolden = cityH >= sunriseH && cityH < sunriseH + 1;
+    const isDay = cityH >= sunriseH + 1 && cityH < sunsetH - 1;
+    const isEveningGolden = cityH >= sunsetH - 1 && cityH < sunsetH;
+    const isDusk = cityH >= sunsetH && cityH <= duskH;
+    
+    if (isNight) {
         body.classList.add('sky-night');
         setOpacity(stars, '1');
         setOpacity(clouds, '0');
         setOpacity(sunRays, '0');
         if (sunMoon) sunMoon.textContent = '🌙';
-    } else if (nowTime < sunrise) {
+    } else if (isDawn) {
         body.classList.add('sky-dawn');
         setOpacity(stars, '0.3');
         setOpacity(clouds, '0.2');
         setOpacity(sunRays, '0.3');
         if (sunMoon) sunMoon.textContent = '🌅';
-    } else if (nowTime < sunrise + 60 * 60000) {
+    } else if (isMorningGolden) {
         body.classList.add('sky-golden');
         setOpacity(stars, '0');
         setOpacity(clouds, '0.4');
         setOpacity(sunRays, '0.7');
         if (sunMoon) sunMoon.textContent = '🌤️';
-    } else if (nowTime < sunset - 60 * 60000) {
+    } else if (isDay) {
         body.classList.add('sky-day');
         setOpacity(stars, '0');
         setOpacity(clouds, '0.5');
         setOpacity(sunRays, '1');
         if (sunMoon) sunMoon.textContent = '☀️';
-    } else if (nowTime < sunset) {
+    } else if (isEveningGolden) {
         body.classList.add('sky-golden');
         setOpacity(stars, '0');
         setOpacity(clouds, '0.3');
         setOpacity(sunRays, '0.5');
         if (sunMoon) sunMoon.textContent = '🌇';
-    } else {
+    } else if (isDusk) {
         body.classList.add('sky-dusk');
         setOpacity(stars, '0.5');
         setOpacity(clouds, '0.1');
         setOpacity(sunRays, '0.2');
         if (sunMoon) sunMoon.textContent = '🌆';
+    } else {
+        // Fallback to day
+        body.classList.add('sky-day');
+        setOpacity(stars, '0');
+        setOpacity(clouds, '0.5');
+        setOpacity(sunRays, '1');
+        if (sunMoon) sunMoon.textContent = '☀️';
     }
 }
 
-function updateDayProgress(sunTimes) {
-    const now = new Date();
+function updateDayProgress(sunTimes, lng) {
     if (!sunTimes.sunrise || !sunTimes.sunset) return;
     
-    const sunrise = sunTimes.sunrise.getTime();
-    const sunset = sunTimes.sunset.getTime();
-    const nowTime = now.getTime();
+    // Get city's current time in hours
+    const now = new Date();
+    const tzOffsetMs = Math.round(lng / 15) * 60 * 60 * 1000;
+    const browserOffsetMs = now.getTimezoneOffset() * 60 * 1000;
+    const cityNowMs = now.getTime() + browserOffsetMs + tzOffsetMs;
+    const cityHours = new Date(cityNowMs).getUTCHours() + new Date(cityNowMs).getUTCMinutes() / 60;
+    
+    // Get sunrise/sunset in city's local hours
+    const sunriseHours = sunTimes.sunrise.getUTCHours() + Math.round(lng / 15) + sunTimes.sunrise.getUTCMinutes() / 60;
+    const sunsetHours = sunTimes.sunset.getUTCHours() + Math.round(lng / 15) + sunTimes.sunset.getUTCMinutes() / 60;
+    
+    // Normalize
+    const normHours = (h) => ((h % 24) + 24) % 24;
+    const cityH = normHours(cityHours);
+    const sunriseH = normHours(sunriseHours);
+    const sunsetH = normHours(sunsetHours);
     
     let progress = 0;
-    if (nowTime <= sunrise) {
+    if (cityH <= sunriseH) {
         progress = 0;
-    } else if (nowTime >= sunset) {
+    } else if (cityH >= sunsetH) {
         progress = 100;
     } else {
-        progress = ((nowTime - sunrise) / (sunset - sunrise)) * 100;
+        progress = ((cityH - sunriseH) / (sunsetH - sunriseH)) * 100;
     }
     
     document.getElementById('dayProgressBar').style.width = `${progress}%`;
@@ -441,7 +470,7 @@ function updateUI(lat, lng, locationName) {
     updateSkyGradient(sunTimes, lng);
     
     // Update day progress
-    updateDayProgress(sunTimes);
+    updateDayProgress(sunTimes, lng);
     
     // Update timeline
     updateTimeline(sunTimes);

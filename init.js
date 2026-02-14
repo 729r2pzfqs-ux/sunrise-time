@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentLat && currentLng) {
             const sunTimes = getSunTimes(new Date(), currentLat, currentLng);
             updateSkyGradient(sunTimes, currentLng);
-            updateDayProgress(sunTimes);
+            updateDayProgress(sunTimes, currentLng);
             updatePrayerTimesUI(currentLat, currentLng);
         }
     }, 60000);
