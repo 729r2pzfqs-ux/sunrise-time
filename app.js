@@ -229,28 +229,28 @@ function updateSkyGradient(sunTimes, lng) {
         return;
     }
     
-    // Get city's current time (convert browser time to city's timezone based on longitude)
+    // Get city's current hour (longitude-based timezone)
     const now = new Date();
-    const tzOffsetMs = Math.round(lng / 15) * 60 * 60 * 1000;
-    const browserOffsetMs = now.getTimezoneOffset() * 60 * 1000;
-    const cityNowMs = now.getTime() + browserOffsetMs + tzOffsetMs;
+    const tzOffset = Math.round(lng / 15); // hours offset from UTC
     
-    // Get hours in city's local time (0-24)
-    const cityHours = new Date(cityNowMs).getUTCHours() + new Date(cityNowMs).getUTCMinutes() / 60;
+    // City's current hour (0-24)
+    const cityHours = (now.getUTCHours() + tzOffset + 24) % 24 + now.getUTCMinutes() / 60;
     
-    // Get sunrise/sunset in city's local hours
-    const sunriseHours = sunTimes.sunrise.getUTCHours() + Math.round(lng / 15) + sunTimes.sunrise.getUTCMinutes() / 60;
-    const sunsetHours = sunTimes.sunset.getUTCHours() + Math.round(lng / 15) + sunTimes.sunset.getUTCMinutes() / 60;
-    const dawnHours = sunriseHours - 0.5; // 30 min before sunrise
-    const duskHours = sunsetHours + 0.5;  // 30 min after sunset
+    // Sunrise/sunset in city's local hours
+    const sunriseHours = (sunTimes.sunrise.getUTCHours() + tzOffset + 24) % 24 + sunTimes.sunrise.getUTCMinutes() / 60;
+    const sunsetHours = (sunTimes.sunset.getUTCHours() + tzOffset + 24) % 24 + sunTimes.sunset.getUTCMinutes() / 60;
+    const dawnHours = sunriseHours - 0.5;
+    const duskHours = sunsetHours + 0.5;
     
-    // Normalize hours to 0-24 range
+    // Normalize to 0-24
     const normHours = (h) => ((h % 24) + 24) % 24;
     const cityH = normHours(cityHours);
     const sunriseH = normHours(sunriseHours);
     const sunsetH = normHours(sunsetHours);
     const dawnH = normHours(dawnHours);
     const duskH = normHours(duskHours);
+    
+    console.log('Sky debug:', {cityH, sunriseH, sunsetH, dawnH, duskH, tzOffset});
     
     // Determine sky state based on city's local hour
     const isNight = cityH < dawnH || cityH > duskH;
@@ -309,22 +309,15 @@ function updateSkyGradient(sunTimes, lng) {
 function updateDayProgress(sunTimes, lng) {
     if (!sunTimes.sunrise || !sunTimes.sunset) return;
     
-    // Get city's current time in hours
     const now = new Date();
-    const tzOffsetMs = Math.round(lng / 15) * 60 * 60 * 1000;
-    const browserOffsetMs = now.getTimezoneOffset() * 60 * 1000;
-    const cityNowMs = now.getTime() + browserOffsetMs + tzOffsetMs;
-    const cityHours = new Date(cityNowMs).getUTCHours() + new Date(cityNowMs).getUTCMinutes() / 60;
+    const tzOffset = Math.round(lng / 15);
     
-    // Get sunrise/sunset in city's local hours
-    const sunriseHours = sunTimes.sunrise.getUTCHours() + Math.round(lng / 15) + sunTimes.sunrise.getUTCMinutes() / 60;
-    const sunsetHours = sunTimes.sunset.getUTCHours() + Math.round(lng / 15) + sunTimes.sunset.getUTCMinutes() / 60;
+    // City's current hour
+    const cityH = (now.getUTCHours() + tzOffset + 24) % 24 + now.getUTCMinutes() / 60;
     
-    // Normalize
-    const normHours = (h) => ((h % 24) + 24) % 24;
-    const cityH = normHours(cityHours);
-    const sunriseH = normHours(sunriseHours);
-    const sunsetH = normHours(sunsetHours);
+    // Sunrise/sunset hours
+    const sunriseH = (sunTimes.sunrise.getUTCHours() + tzOffset + 24) % 24 + sunTimes.sunrise.getUTCMinutes() / 60;
+    const sunsetH = (sunTimes.sunset.getUTCHours() + tzOffset + 24) % 24 + sunTimes.sunset.getUTCMinutes() / 60;
     
     let progress = 0;
     if (cityH <= sunriseH) {
