@@ -24,42 +24,50 @@ function getPrayerTimes(date, lat, lng, method = 'ISNA') {
     const eot = getEquationOfTime(t);
     const decl = getSunDeclination(t);
     
-    // Helper to calculate time for a given angle
-    function getTimeForAngle(angle, isRising) {
-        const ha = getHourAngle(lat, decl, 90 + angle);
-        if (ha === null) return null;
-        
-        const noonOffset = 720 - lng * 4 - eot;
-        const offset = isRising ? -ha * 4 : ha * 4;
-        
-        const time = new Date(date);
-        time.setUTCHours(0, 0, 0, 0);
-        time.setUTCMinutes(noonOffset + offset);
-        return time;
+    // Solar noon in minutes from UTC midnight
+    const noonMinutes = 720 - lng * 4 - eot;
+    
+    // Create solar noon date
+    const solarNoon = new Date(date);
+    solarNoon.setUTCHours(0, 0, 0, 0);
+    solarNoon.setUTCMinutes(noonMinutes);
+    
+    // Helper to get time from hour angle
+    function timeFromHourAngle(ha, beforeNoon) {
+        const offsetMs = ha * 4 * 60 * 1000; // ha degrees to milliseconds
+        return new Date(solarNoon.getTime() + (beforeNoon ? -offsetMs : offsetMs));
     }
     
-    // Fajr - before sunrise at specified angle
-    const fajr = getTimeForAngle(params.fajr, true);
+    // Fajr - sun 15-19° below horizon (before sunrise)
+    const fajrHA = getHourAngle(lat, decl, 90 + params.fajr);
+    const fajr = fajrHA ? timeFromHourAngle(fajrHA, true) : null;
     
-    // Sunrise
+    // Sunrise - from sunTimes (already calculated)
     const sunrise = sunTimes.sunrise;
     
-    // Dhuhr - just after solar noon (add 1 min for safety)
-    const dhuhr = new Date(sunTimes.solarNoon.getTime() + 60000);
+    // Dhuhr - just after solar noon
+    const dhuhr = new Date(solarNoon.getTime() + 60000);
     
-    // Asr - shadow length calculation (Shafi'i: shadow = object + shadow at noon)
-    const asrAngle = toDeg(Math.atan(1 + Math.tan(toRad(Math.abs(lat - decl)))));
-    const asr = getTimeForAngle(90 - asrAngle, false);
+    // Asr - when shadow = object + shadow at noon (Shafi'i method)
+    // Shadow factor = 1 + tan(|latitude - declination|)
+    // Sun altitude at Asr = arctan(1 / shadow_factor)
+    const shadowFactor = 1 + Math.tan(toRad(Math.abs(lat - decl)));
+    const asrAltitude = toDeg(Math.atan(1 / shadowFactor));
+    const asrZenith = 90 - asrAltitude;
+    const asrHA = getHourAngle(lat, decl, asrZenith);
+    const asr = asrHA ? timeFromHourAngle(asrHA, false) : null;
     
     // Maghrib - at sunset
     const maghrib = sunTimes.sunset;
     
-    // Isha - after sunset at specified angle (or minutes for Makkah method)
+    // Isha - sun 15-18° below horizon (after sunset)
     let isha;
     if (method === 'MAKKAH') {
+        // Makkah method: 90 minutes after Maghrib
         isha = new Date(maghrib.getTime() + params.isha * 60000);
     } else {
-        isha = getTimeForAngle(params.isha, false);
+        const ishaHA = getHourAngle(lat, decl, 90 + params.isha);
+        isha = ishaHA ? timeFromHourAngle(ishaHA, false) : null;
     }
     
     return {
@@ -73,13 +81,30 @@ function getPrayerTimes(date, lat, lng, method = 'ISNA') {
     };
 }
 
-function formatPrayerTime(date) {
+// Format prayer time in location's timezone (using longitude)
+function formatPrayerTime(date, lng) {
     if (!date) return '--:--';
-    return date.toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: true 
-    });
+    
+    // Use provided lng or global currentLng
+    const longitude = lng !== undefined ? lng : (currentLng || 0);
+    
+    // Calculate timezone offset based on longitude (15° = 1 hour)
+    const tzOffsetHours = Math.round(longitude / 15);
+    
+    // Get UTC hours and minutes
+    const utcHours = date.getUTCHours();
+    const utcMinutes = date.getUTCMinutes();
+    
+    // Apply timezone offset
+    let localHours = utcHours + tzOffsetHours;
+    if (localHours < 0) localHours += 24;
+    if (localHours >= 24) localHours -= 24;
+    
+    // Format as 12-hour with AM/PM
+    const period = localHours >= 12 ? 'PM' : 'AM';
+    const hours12 = localHours % 12 || 12;
+    
+    return `${String(hours12).padStart(2, '0')}:${String(utcMinutes).padStart(2, '0')} ${period}`;
 }
 
 function getNextPrayer(prayerTimes) {
