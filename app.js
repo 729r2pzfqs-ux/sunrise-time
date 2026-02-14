@@ -572,32 +572,60 @@ function setupCitySearch() {
     
     if (!input || !results) return;
     
+    // Popular cities to show on focus
+    const popularCities = [
+        { name: "New York", country: "USA", lat: 40.7128, lng: -74.0060 },
+        { name: "London", country: "UK", lat: 51.5074, lng: -0.1278 },
+        { name: "Tokyo", country: "Japan", lat: 35.6762, lng: 139.6503 },
+        { name: "Dubai", country: "UAE", lat: 25.2048, lng: 55.2708 },
+        { name: "Paris", country: "France", lat: 48.8566, lng: 2.3522 },
+        { name: "Sydney", country: "Australia", lat: -33.8688, lng: 151.2093 },
+        { name: "Mecca", country: "Saudi Arabia", lat: 21.3891, lng: 39.8579 },
+        { name: "Cairo", country: "Egypt", lat: 30.0444, lng: 31.2357 },
+    ];
+    
+    function showResults(cities) {
+        results.innerHTML = cities.map(city => `
+            <div class="autocomplete-item px-4 py-2 cursor-pointer hover:bg-white/10" data-lat="${city.lat}" data-lng="${city.lng}" data-name="${city.name}, ${city.country}">
+                <span class="text-yellow-300">📍</span> ${city.name}, ${city.country}
+            </div>
+        `).join('');
+        results.classList.remove('hidden');
+    }
+    
+    // On focus: clear field, select all, show popular cities
+    input.addEventListener('focus', () => {
+        input.select(); // Select all text so user can type to replace
+        showResults(popularCities);
+    });
+    
+    // On input: search and filter
     input.addEventListener('input', (e) => {
         const query = e.target.value;
         
         clearTimeout(searchTimeout);
         
-        if (query.length < 2) {
-            results.classList.add('hidden');
+        if (query.length < 1) {
+            showResults(popularCities);
             return;
         }
         
         searchTimeout = setTimeout(() => {
-            // First search local cities
+            // First search local cities database
             const localResults = searchCities(query);
             
             if (localResults.length > 0) {
                 results.innerHTML = localResults.map(city => `
-                    <div class="autocomplete-item px-4 py-2 cursor-pointer" data-lat="${city.lat}" data-lng="${city.lng}" data-name="${city.display}">
+                    <div class="autocomplete-item px-4 py-2 cursor-pointer hover:bg-white/10" data-lat="${city.lat}" data-lng="${city.lng}" data-name="${city.display}">
                         <span class="text-yellow-300">📍</span> ${city.display}
                     </div>
                 `).join('');
                 results.classList.remove('hidden');
-            } else {
+            } else if (query.length >= 2) {
                 // Fall back to API search
                 searchCityAPI(query);
             }
-        }, 300);
+        }, 200);
     });
     
     // Handle click on result
@@ -610,11 +638,11 @@ function setupCitySearch() {
             
             input.value = name;
             results.classList.add('hidden');
-            updateUI(lat, lng, name);
+            updateAll(lat, lng, name);
         }
     });
     
-    // Hide on blur
+    // Hide on blur (with delay for click to register)
     input.addEventListener('blur', () => {
         setTimeout(() => results.classList.add('hidden'), 200);
     });
