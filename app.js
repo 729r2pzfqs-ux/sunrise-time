@@ -216,12 +216,7 @@ function formatTime12(date, lng) {
 // ============== UI UPDATES ==============
 
 function updateSkyGradient(sunTimes, lng) {
-    // Get current time in the selected city's timezone (based on longitude)
     const now = new Date();
-    const utcTime = now.getTime() + now.getTimezoneOffset() * 60000;
-    const cityOffset = Math.round(lng / 15) * 60 * 60000; // Approximate timezone from longitude
-    const cityTime = utcTime + cityOffset;
-    
     const body = document.getElementById('body');
     const stars = document.getElementById('stars');
     const clouds = document.getElementById('clouds');
@@ -239,7 +234,18 @@ function updateSkyGradient(sunTimes, lng) {
     const sunset = sunTimes.sunset.getTime();
     const civilDawn = sunTimes.civilDawn?.getTime() || sunrise - 30 * 60000;
     const civilDusk = sunTimes.civilDusk?.getTime() || sunset + 30 * 60000;
-    const nowTime = cityTime;
+    const nowTime = now.getTime();
+    
+    // Debug: log times to console
+    console.log('Sky gradient debug:', {
+        now: new Date(nowTime).toISOString(),
+        sunrise: new Date(sunrise).toISOString(),
+        sunset: new Date(sunset).toISOString(),
+        civilDawn: new Date(civilDawn).toISOString(),
+        civilDusk: new Date(civilDusk).toISOString(),
+        isAfterDawn: nowTime >= civilDawn,
+        isBeforeDusk: nowTime <= civilDusk
+    });
     
     // Helper to set element styles safely
     const setOpacity = (el, val) => { if (el) el.style.opacity = val; };
