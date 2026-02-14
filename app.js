@@ -375,8 +375,10 @@ function updateTimeline(sunTimes) {
 }
 
 function update7DayForecast(lat, lng) {
+    console.log('update7DayForecast called with:', { lat, lng });
     const forecast = document.getElementById('forecast');
-    if (!forecast) return;
+    if (!forecast) { console.log('No forecast element found'); return; }
+    console.log('Forecast element found');
     const days = [];
     const today = new Date();
     
@@ -397,6 +399,7 @@ function update7DayForecast(lat, lng) {
     }
     
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    console.log('7-day forecast days:', days);
     
     forecast.innerHTML = days.map((day, i) => {
         const hours = Math.floor(day.dayLength / 60);
