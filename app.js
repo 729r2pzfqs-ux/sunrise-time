@@ -260,12 +260,15 @@ function updateSkyGradient(sunTimes, lng) {
     const isEveningGolden = cityH >= sunsetH - 1 && cityH < sunsetH;
     const isDusk = cityH >= sunsetH && cityH <= duskH;
     
+    console.log('Sky state:', { isNight, isDawn, isMorningGolden, isDay, isEveningGolden, isDusk });
+    
     if (isNight) {
+        console.log('Setting NIGHT mode, sunMoon element:', sunMoon);
         body.classList.add('sky-night');
         setOpacity(stars, '1');
         setOpacity(clouds, '0');
         setOpacity(sunRays, '0');
-        if (sunMoon) sunMoon.textContent = '🌙';
+        if (sunMoon) { sunMoon.textContent = '🌙'; console.log('Set moon emoji'); }
     } else if (isDawn) {
         body.classList.add('sky-dawn');
         setOpacity(stars, '0.3');
