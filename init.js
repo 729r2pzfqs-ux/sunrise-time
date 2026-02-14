@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(() => {
         if (currentLat && currentLng) {
             const sunTimes = getSunTimes(new Date(), currentLat, currentLng);
-            updateSkyGradient(sunTimes);
+            updateSkyGradient(sunTimes, currentLng);
             updateDayProgress(sunTimes);
             updatePrayerTimesUI(currentLat, currentLng);
         }
