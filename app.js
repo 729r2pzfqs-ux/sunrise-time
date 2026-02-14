@@ -284,6 +284,7 @@ function updateDayProgress(sunTimes) {
 
 function updateTimeline(sunTimes) {
     const timeline = document.getElementById('timeline');
+    if (!timeline) return; // Timeline section might not exist
     const events = [];
     
     if (sunTimes.civilDawn) events.push({ time: sunTimes.civilDawn, name: 'Civil Dawn', icon: '🌑', desc: 'Sky begins to lighten' });
@@ -320,6 +321,7 @@ function updateTimeline(sunTimes) {
 
 function update7DayForecast(lat, lng) {
     const forecast = document.getElementById('forecast');
+    if (!forecast) return;
     const days = [];
     const today = new Date();
     
@@ -532,24 +534,32 @@ function updateMoonUI(lat, lng) {
     const moon = getMoonPhase(today);
     const moonTimes = getMoonTimes(today, lat, lng);
     
-    document.getElementById('moonEmoji').textContent = moon.emoji;
-    document.getElementById('moonPhaseName').textContent = moon.phaseName;
-    document.getElementById('moonIllumination').textContent = `${moon.illumination}% illuminated`;
+    const moonEmoji = document.getElementById('moonEmoji');
+    const moonPhaseName = document.getElementById('moonPhaseName');
+    const moonIllumination = document.getElementById('moonIllumination');
+    const nextFullMoon = document.getElementById('nextFullMoon');
+    const nextNewMoon = document.getElementById('nextNewMoon');
+    const moonrise = document.getElementById('moonrise');
+    const moonset = document.getElementById('moonset');
+    
+    if (moonEmoji) moonEmoji.textContent = moon.emoji;
+    if (moonPhaseName) moonPhaseName.textContent = moon.phaseName;
+    if (moonIllumination) moonIllumination.textContent = `${moon.illumination}% illuminated`;
     
     // Upcoming events
     const events = getUpcomingLunarEvents(today, 2);
-    const fullMoon = events.find(e => e.type === 'Full Moon');
-    const newMoon = events.find(e => e.type === 'New Moon');
+    const fullMoonEvent = events.find(e => e.type === 'Full Moon');
+    const newMoonEvent = events.find(e => e.type === 'New Moon');
     
-    if (fullMoon) {
-        document.getElementById('nextFullMoon').textContent = fullMoon.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    if (nextFullMoon && fullMoonEvent) {
+        nextFullMoon.textContent = fullMoonEvent.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     }
-    if (newMoon) {
-        document.getElementById('nextNewMoon').textContent = newMoon.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    if (nextNewMoon && newMoonEvent) {
+        nextNewMoon.textContent = newMoonEvent.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     }
     
-    document.getElementById('moonrise').textContent = formatTime(moonTimes.moonrise);
-    document.getElementById('moonset').textContent = formatTime(moonTimes.moonset);
+    if (moonrise) moonrise.textContent = formatTime(moonTimes.moonrise);
+    if (moonset) moonset.textContent = formatTime(moonTimes.moonset);
 }
 
 // ============== CITY SEARCH WITH AUTOCOMPLETE ==============
