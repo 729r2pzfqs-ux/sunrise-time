@@ -593,11 +593,13 @@ function setupCitySearch() {
         results.classList.remove('hidden');
     }
     
-    // On focus: clear field, select all, show popular cities
-    input.addEventListener('focus', () => {
+    // On focus/click: select all, show popular cities
+    function onInputActivate() {
         input.select(); // Select all text so user can type to replace
         showResults(popularCities);
-    });
+    }
+    input.addEventListener('focus', onInputActivate);
+    input.addEventListener('click', onInputActivate); // For mobile
     
     // On input: search and filter
     input.addEventListener('input', (e) => {
