@@ -352,58 +352,44 @@ function updateUI(lat, lng, locationName) {
     const today = new Date();
     const sunTimes = getSunTimes(today, lat, lng);
     
-    // Update location name
-    document.getElementById('locationName').textContent = locationName || `${lat.toFixed(2)}°, ${lng.toFixed(2)}°`;
-    
     // Update date
-    document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
+    const dateEl = document.getElementById('currentDate');
+    if (dateEl) {
+        dateEl.textContent = today.toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
     
     // Update main times
-    document.getElementById('sunriseTime').textContent = formatTime(sunTimes.sunrise);
-    document.getElementById('sunsetTime').textContent = formatTime(sunTimes.sunset);
-    document.getElementById('sunriseTimeSmall').textContent = formatTime(sunTimes.sunrise);
-    document.getElementById('sunsetTimeSmall').textContent = formatTime(sunTimes.sunset);
+    const sunriseEl = document.getElementById('sunriseTime');
+    const sunsetEl = document.getElementById('sunsetTime');
+    if (sunriseEl) sunriseEl.textContent = formatTime(sunTimes.sunrise);
+    if (sunsetEl) sunsetEl.textContent = formatTime(sunTimes.sunset);
     
     // Day length
     if (sunTimes.sunrise && sunTimes.sunset) {
         const dayLengthMs = sunTimes.sunset - sunTimes.sunrise;
         const hours = Math.floor(dayLengthMs / 1000 / 60 / 60);
         const mins = Math.round((dayLengthMs / 1000 / 60) % 60);
-        document.getElementById('dayLength').textContent = `${hours}h ${mins}m`;
-        
-        // Compare to yesterday
-        const yesterday = new Date(today);
-        yesterday.setDate(yesterday.getDate() - 1);
-        const yesterdaySun = getSunTimes(yesterday, lat, lng);
-        if (yesterdaySun.sunrise && yesterdaySun.sunset) {
-            const yesterdayLength = yesterdaySun.sunset - yesterdaySun.sunrise;
-            const diff = Math.round((dayLengthMs - yesterdayLength) / 1000 / 60);
-            if (diff > 0) {
-                document.getElementById('dayLengthChange').textContent = `+${diff} min longer than yesterday`;
-            } else if (diff < 0) {
-                document.getElementById('dayLengthChange').textContent = `${diff} min shorter than yesterday`;
-            } else {
-                document.getElementById('dayLengthChange').textContent = `Same as yesterday`;
-            }
-        }
+        const dayLengthEl = document.getElementById('dayLength');
+        if (dayLengthEl) dayLengthEl.textContent = `${hours}h ${mins}m`;
     }
     
     // Solar noon
-    document.getElementById('solarNoon').textContent = formatTime(sunTimes.solarNoon);
+    const solarNoonEl = document.getElementById('solarNoon');
+    if (solarNoonEl) solarNoonEl.textContent = formatTime(sunTimes.solarNoon);
     
     // Golden hours
-    if (sunTimes.goldenHourMorningStart && sunTimes.goldenHourMorningEnd) {
-        document.getElementById('goldenMorning').textContent = 
-            `${formatTime(sunTimes.goldenHourMorningStart)} - ${formatTime(sunTimes.goldenHourMorningEnd)}`;
+    const goldenMorningEl = document.getElementById('goldenMorning');
+    const goldenEveningEl = document.getElementById('goldenEvening');
+    if (goldenMorningEl && sunTimes.goldenHourMorningStart && sunTimes.goldenHourMorningEnd) {
+        goldenMorningEl.textContent = `${formatTime(sunTimes.goldenHourMorningStart)} - ${formatTime(sunTimes.goldenHourMorningEnd)}`;
     }
-    if (sunTimes.goldenHourEveningStart && sunTimes.goldenHourEveningEnd) {
-        document.getElementById('goldenEvening').textContent = 
-            `${formatTime(sunTimes.goldenHourEveningStart)} - ${formatTime(sunTimes.goldenHourEveningEnd)}`;
+    if (goldenEveningEl && sunTimes.goldenHourEveningStart && sunTimes.goldenHourEveningEnd) {
+        goldenEveningEl.textContent = `${formatTime(sunTimes.goldenHourEveningStart)} - ${formatTime(sunTimes.goldenHourEveningEnd)}`;
     }
     
     // Update sky gradient
