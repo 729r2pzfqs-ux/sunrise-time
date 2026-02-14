@@ -474,7 +474,7 @@ function updateUI(lat, lng, locationName) {
     updateTimeline(sunTimes);
     
     // Update 7-day forecast
-    update7DayForecast(lat, lng);
+    try { update7DayForecast(lat, lng); console.log('update7DayForecast done'); } catch(e) { console.error('update7DayForecast error:', e); }
 }
 
 // ============== GEOLOCATION ==============
@@ -596,15 +596,22 @@ function updateMoonUI(lat, lng) {
     if (moonIllumination) moonIllumination.textContent = `${moon.illumination}% illuminated`;
     
     // Upcoming events
-    const events = getUpcomingLunarEvents(today, 2);
-    const fullMoonEvent = events.find(e => e.type === 'Full Moon');
-    const newMoonEvent = events.find(e => e.type === 'New Moon');
-    
-    if (nextFullMoon && fullMoonEvent) {
-        nextFullMoon.textContent = fullMoonEvent.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    }
-    if (nextNewMoon && newMoonEvent) {
-        nextNewMoon.textContent = newMoonEvent.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    try {
+        const events = getUpcomingLunarEvents(today, 4);
+        console.log('Lunar events:', events);
+        const fullMoonEvent = events.find(e => e.type === 'Full Moon');
+        const newMoonEvent = events.find(e => e.type === 'New Moon');
+        
+        if (nextFullMoon && fullMoonEvent) {
+            nextFullMoon.textContent = fullMoonEvent.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        } else if (nextFullMoon) {
+            nextFullMoon.textContent = 'Calculating...';
+        }
+        if (nextNewMoon && newMoonEvent) {
+            nextNewMoon.textContent = newMoonEvent.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+    } catch(e) {
+        console.error('Lunar events error:', e);
     }
     
     if (moonrise) moonrise.textContent = formatTime(moonTimes.moonrise);
