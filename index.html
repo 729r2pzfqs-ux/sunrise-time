@@ -44,8 +44,20 @@
         .prayer-card.passed { opacity: 0.5; }
         
         /* Search autocomplete */
-        .autocomplete-results { position: absolute; top: 100%; left: 0; right: 0; z-index: 50; }
-        .autocomplete-item:hover { background: rgba(255,255,255,0.1); }
+        .autocomplete-results { 
+            position: absolute; 
+            top: 100%; 
+            left: 0; 
+            right: 0; 
+            z-index: 9999; 
+            max-height: 300px; 
+            overflow-y: auto;
+            background: rgba(15, 23, 42, 0.98);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .autocomplete-item { padding: 12px 16px; cursor: pointer; }
+        .autocomplete-item:hover, .autocomplete-item:active { background: rgba(255,255,255,0.15); }
     </style>
 </head>
 <body class="min-h-screen sky-day text-white transition-all duration-1000" id="body">
@@ -121,7 +133,7 @@
                             </button>
                         </div>
                         <!-- Autocomplete results -->
-                        <div id="autocompleteResults" class="autocomplete-results hidden glass-dark rounded-lg mt-1 overflow-hidden"></div>
+                        <div id="autocompleteResults" class="autocomplete-results hidden rounded-lg mt-2"></div>
                     </div>
                     
                     <p class="text-white/60 text-sm mb-4" id="currentDate">Loading...</p>
