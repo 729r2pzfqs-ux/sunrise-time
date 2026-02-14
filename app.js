@@ -462,24 +462,18 @@ async function detectLocation() {
                 const name = await getLocationName(lat, lng);
                 const input = document.getElementById('locationSearch');
                 if (input) input.value = name || '';
-                updateUI(lat, lng, name);
-                updatePrayerTimesUI(lat, lng);
-                updateMoonUI(lat, lng);
+                updateAll(lat, lng, name);
             },
             (error) => {
                 // Fallback to IP-based location or default
                 console.log('Geolocation denied, using default');
                 const input = document.getElementById('locationSearch');
                 if (input) input.value = 'London, UK';
-                updateUI(51.5074, -0.1278, 'London, UK');
-                updatePrayerTimesUI(51.5074, -0.1278);
-                updateMoonUI(51.5074, -0.1278);
+                updateAll(51.5074, -0.1278, 'London, UK');
             }
         );
     } else {
-        updateUI(51.5074, -0.1278, 'London, UK');
-        updatePrayerTimesUI(51.5074, -0.1278);
-        updateMoonUI(51.5074, -0.1278);
+        updateAll(51.5074, -0.1278, 'London, UK');
     }
 }
 
