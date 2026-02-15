@@ -242,8 +242,8 @@ function initTimeFormat(locationName) {
     if (savedPref !== null) {
         use12HourFormat = savedPref === '12h';
     } else {
-        // Default: always 24h (user can tap to switch to AM/PM)
-        use12HourFormat = false;
+        // Default: US/UK gets AM/PM, others get 24h
+        use12HourFormat = isAMPMCountry(locationName);
     }
 }
 
