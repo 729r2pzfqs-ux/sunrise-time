@@ -257,6 +257,7 @@ function toggleTimeFormat() {
         refreshTimeDisplays(sunTimes, currentLng);
         updateTimeline(sunTimes);
         update7DayForecast(currentLat, currentLng);
+        updatePrayerTimesUI(currentLat, currentLng); // Refresh prayer times too
     }
 }
 
@@ -658,7 +659,7 @@ function updatePrayerTimesUI(lat, lng) {
         const isNext = !isPassed && prayers.findIndex(p => prayerTimes[p.key] && prayerTimes[p.key] > now) === prayers.indexOf(prayer);
         
         return `
-            <div class="prayer-card glass-dark rounded-xl p-3 text-center ${isPassed ? 'passed' : ''} ${isNext ? 'next' : ''}">
+            <div class="prayer-card glass-dark rounded-xl p-3 text-center ${isPassed ? 'passed' : ''} ${isNext ? 'next' : ''}" onclick="toggleTimeFormat()" style="cursor: pointer" title="Tap to toggle 24h/AM-PM">
                 <div class="text-xl mb-1">${prayer.icon}</div>
                 <p class="text-xs text-white/60 mb-1">${prayer.name}</p>
                 <p class="font-semibold text-sm">${formatPrayerTime(time)}</p>

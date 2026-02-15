@@ -82,6 +82,7 @@ function getPrayerTimes(date, lat, lng, method = 'ISNA') {
 }
 
 // Format prayer time in location's timezone (using longitude)
+// Respects global use12HourFormat preference (tap to toggle)
 function formatPrayerTime(date, lng) {
     if (!date) return '--:--';
     
@@ -100,11 +101,16 @@ function formatPrayerTime(date, lng) {
     if (localHours < 0) localHours += 24;
     if (localHours >= 24) localHours -= 24;
     
-    // Format as 12-hour with AM/PM
-    const period = localHours >= 12 ? 'PM' : 'AM';
-    const hours12 = localHours % 12 || 12;
-    
-    return `${String(hours12).padStart(2, '0')}:${String(utcMinutes).padStart(2, '0')} ${period}`;
+    // Check global preference (defined in app.js)
+    if (typeof use12HourFormat !== 'undefined' && use12HourFormat) {
+        // Format as 12-hour with AM/PM
+        const period = localHours >= 12 ? 'PM' : 'AM';
+        const hours12 = localHours % 12 || 12;
+        return `${hours12}:${String(utcMinutes).padStart(2, '0')} ${period}`;
+    } else {
+        // Format as 24-hour
+        return `${String(localHours).padStart(2, '0')}:${String(utcMinutes).padStart(2, '0')}`;
+    }
 }
 
 function getNextPrayer(prayerTimes) {
