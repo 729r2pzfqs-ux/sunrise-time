@@ -229,36 +229,33 @@ function updateSkyGradient(sunTimes, lng) {
         return;
     }
     
-    // Get city's current hour (longitude-based timezone)
-    const now = new Date();
-    const tzOffset = Math.round(lng / 15); // hours offset from UTC
+    // Use UTC timestamps for accurate comparison
+    const nowMs = Date.now();
+    const sunriseMs = sunTimes.sunrise.getTime();
+    const sunsetMs = sunTimes.sunset.getTime();
     
-    // City's current hour (0-24)
-    const cityHours = (now.getUTCHours() + tzOffset + 24) % 24 + now.getUTCMinutes() / 60;
+    // Define time periods (in milliseconds)
+    const oneHour = 60 * 60 * 1000;
+    const halfHour = 30 * 60 * 1000;
     
-    // Sunrise/sunset in city's local hours
-    const sunriseHours = (sunTimes.sunrise.getUTCHours() + tzOffset + 24) % 24 + sunTimes.sunrise.getUTCMinutes() / 60;
-    const sunsetHours = (sunTimes.sunset.getUTCHours() + tzOffset + 24) % 24 + sunTimes.sunset.getUTCMinutes() / 60;
-    const dawnHours = sunriseHours - 0.5;
-    const duskHours = sunsetHours + 0.5;
+    const dawnMs = sunriseMs - halfHour;
+    const duskEndMs = sunsetMs + halfHour;
+    const morningGoldenEndMs = sunriseMs + oneHour;
+    const eveningGoldenStartMs = sunsetMs - oneHour;
     
-    // Normalize to 0-24
-    const normHours = (h) => ((h % 24) + 24) % 24;
-    const cityH = normHours(cityHours);
-    const sunriseH = normHours(sunriseHours);
-    const sunsetH = normHours(sunsetHours);
-    const dawnH = normHours(dawnHours);
-    const duskH = normHours(duskHours);
+    console.log('Sky debug (UTC):', {
+        now: new Date(nowMs).toISOString(),
+        sunrise: sunTimes.sunrise.toISOString(),
+        sunset: sunTimes.sunset.toISOString()
+    });
     
-    console.log('Sky debug:', {cityH, sunriseH, sunsetH, dawnH, duskH, tzOffset});
-    
-    // Determine sky state based on city's local hour
-    const isNight = cityH < dawnH || cityH > duskH;
-    const isDawn = cityH >= dawnH && cityH < sunriseH;
-    const isMorningGolden = cityH >= sunriseH && cityH < sunriseH + 1;
-    const isDay = cityH >= sunriseH + 1 && cityH < sunsetH - 1;
-    const isEveningGolden = cityH >= sunsetH - 1 && cityH < sunsetH;
-    const isDusk = cityH >= sunsetH && cityH <= duskH;
+    // Determine sky state
+    const isNight = nowMs < dawnMs || nowMs > duskEndMs;
+    const isDawn = nowMs >= dawnMs && nowMs < sunriseMs;
+    const isMorningGolden = nowMs >= sunriseMs && nowMs < morningGoldenEndMs;
+    const isDay = nowMs >= morningGoldenEndMs && nowMs < eveningGoldenStartMs;
+    const isEveningGolden = nowMs >= eveningGoldenStartMs && nowMs < sunsetMs;
+    const isDusk = nowMs >= sunsetMs && nowMs <= duskEndMs;
     
     console.log('Sky state:', { isNight, isDawn, isMorningGolden, isDay, isEveningGolden, isDusk });
     
@@ -312,33 +309,35 @@ function updateSkyGradient(sunTimes, lng) {
 function updateDayProgress(sunTimes, lng) {
     if (!sunTimes.sunrise || !sunTimes.sunset) return;
     
-    const now = new Date();
-    const tzOffset = Math.round(lng / 15);
+    // Use UTC timestamps for consistent comparison
+    const nowMs = Date.now();
+    const sunriseMs = sunTimes.sunrise.getTime();
+    const sunsetMs = sunTimes.sunset.getTime();
     
-    // City's current hour
-    const cityH = (now.getUTCHours() + tzOffset + 24) % 24 + now.getUTCMinutes() / 60;
+    const dayLengthMs = sunsetMs - sunriseMs;
+    const elapsedMs = nowMs - sunriseMs;
     
-    // Sunrise/sunset hours - use formatTime logic
-    const sunriseH = (sunTimes.sunrise.getUTCHours() + tzOffset + 24) % 24 + sunTimes.sunrise.getUTCMinutes() / 60;
-    const sunsetH = (sunTimes.sunset.getUTCHours() + tzOffset + 24) % 24 + sunTimes.sunset.getUTCMinutes() / 60;
-    
-    console.log('Progress debug:', { cityH, sunriseH, sunsetH, tzOffset, lng });
+    console.log('Progress debug (UTC):', { 
+        nowMs, sunriseMs, sunsetMs, 
+        elapsedMs, dayLengthMs,
+        nowUTC: new Date(nowMs).toISOString(),
+        sunriseUTC: sunTimes.sunrise.toISOString(),
+        sunsetUTC: sunTimes.sunset.toISOString()
+    });
     
     let progress = 0;
-    const dayLength = sunsetH - sunriseH;
-    const elapsed = cityH - sunriseH;
     
-    if (elapsed <= 0) {
+    if (elapsedMs <= 0) {
         progress = 0;
-    } else if (elapsed >= dayLength) {
+    } else if (elapsedMs >= dayLengthMs) {
         progress = 100;
     } else {
-        progress = (elapsed / dayLength) * 100;
+        progress = (elapsedMs / dayLengthMs) * 100;
     }
     
     const progressBar = document.getElementById('dayProgressBar');
     const progressText = document.getElementById('dayProgressPercent');
-    console.log('Setting progress:', progress, 'elements:', { progressBar, progressText });
+    console.log('Setting progress:', Math.round(progress) + '%');
     if (progressBar) progressBar.style.width = `${progress}%`;
     if (progressText) progressText.textContent = `${Math.round(progress)}%`;
 }
