@@ -210,9 +210,9 @@ function formatTime12(date, lng) {
     if (!date) return '--:--';
     const time24 = formatTime(date, lng);
     const [hours, minutes] = time24.split(':').map(Number);
-    const period = hours >= 12 ? 'PM' : 'AM';
+    const period = hours >= 12 ? 'pm' : 'am';
     const hours12 = hours % 12 || 12;
-    return `${hours12}:${String(minutes).padStart(2, '0')} ${period}`;
+    return `${hours12}:${String(minutes).padStart(2, '0')}${period}`;
 }
 
 // Format time based on user preference (24h or AM/PM)

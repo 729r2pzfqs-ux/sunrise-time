@@ -103,10 +103,10 @@ function formatPrayerTime(date, lng) {
     
     // Check global preference (defined in app.js)
     if (typeof use12HourFormat !== 'undefined' && use12HourFormat) {
-        // Format as 12-hour with AM/PM
-        const period = localHours >= 12 ? 'PM' : 'AM';
+        // Format as 12-hour with am/pm (compact)
+        const period = localHours >= 12 ? 'pm' : 'am';
         const hours12 = localHours % 12 || 12;
-        return `${hours12}:${String(utcMinutes).padStart(2, '0')} ${period}`;
+        return `${hours12}:${String(utcMinutes).padStart(2, '0')}${period}`;
     } else {
         // Format as 24-hour
         return `${String(localHours).padStart(2, '0')}:${String(utcMinutes).padStart(2, '0')}`;
