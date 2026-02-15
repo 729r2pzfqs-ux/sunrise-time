@@ -221,14 +221,19 @@ function formatTimeDisplay(date, lng) {
     return use12HourFormat ? formatTime12(date, lng) : formatTime(date, lng);
 }
 
-// Check if location is in US (default to AM/PM)
-function isUSLocation(locationName) {
+// Check if location is in US or UK (default to AM/PM)
+function isAMPMCountry(locationName) {
     if (!locationName) return false;
     const lower = locationName.toLowerCase();
-    return lower.includes(', us') || 
-           lower.includes('usa') || 
-           lower.includes('united states') ||
-           lower.endsWith(', usa');
+    // US
+    if (lower.includes(', us') || lower.includes('usa') || 
+        lower.includes('united states') || lower.endsWith(', usa')) return true;
+    // UK
+    if (lower.includes(', uk') || lower.includes('united kingdom') || 
+        lower.includes('england') || lower.includes('scotland') ||
+        lower.includes('wales') || lower.includes('northern ireland') ||
+        lower.endsWith(', gb')) return true;
+    return false;
 }
 
 // Initialize time format preference
@@ -237,8 +242,8 @@ function initTimeFormat(locationName) {
     if (savedPref !== null) {
         use12HourFormat = savedPref === '12h';
     } else {
-        // Default: US gets AM/PM, others get 24h
-        use12HourFormat = isUSLocation(locationName);
+        // Default: US/UK gets AM/PM, others get 24h
+        use12HourFormat = isAMPMCountry(locationName);
     }
 }
 
