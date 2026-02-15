@@ -215,12 +215,17 @@ function formatTime12(date, lng) {
 
 // ============== UI UPDATES ==============
 
+function setOpacity(element, opacity) {
+    if (element) element.style.opacity = opacity;
+}
+
 function updateSkyGradient(sunTimes, lng) {
     const body = document.getElementById('body');
     const stars = document.getElementById('stars');
     const clouds = document.getElementById('clouds');
     const sunRays = document.getElementById('sunRays');
     const sunMoon = document.getElementById('sunMoonEmoji');
+    const heroSun = document.getElementById('heroSun');
     
     body.classList.remove('sky-dawn', 'sky-day', 'sky-golden', 'sky-dusk', 'sky-night');
     
@@ -260,12 +265,16 @@ function updateSkyGradient(sunTimes, lng) {
     console.log('Sky state:', { isNight, isDawn, isMorningGolden, isDay, isEveningGolden, isDusk });
     
     if (isNight) {
-        console.log('Setting NIGHT mode, sunMoon element:', sunMoon);
+        console.log('Setting NIGHT mode');
         body.classList.add('sky-night');
         setOpacity(stars, '1');
         setOpacity(clouds, '0');
         setOpacity(sunRays, '0');
-        if (sunMoon) { sunMoon.textContent = '🌙'; console.log('Set moon emoji'); }
+        if (sunMoon) sunMoon.textContent = '🌙';
+        if (heroSun) {
+            heroSun.className = 'w-28 h-28 md:w-36 md:h-36 rounded-full bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400 float mx-auto relative z-10 transition-all duration-500';
+            heroSun.style.boxShadow = '0 0 40px rgba(200, 200, 220, 0.4)';
+        }
     } else if (isDawn) {
         body.classList.add('sky-dawn');
         setOpacity(stars, '0.3');
@@ -284,6 +293,10 @@ function updateSkyGradient(sunTimes, lng) {
         setOpacity(clouds, '0.5');
         setOpacity(sunRays, '1');
         if (sunMoon) sunMoon.textContent = '☀️';
+        if (heroSun) {
+            heroSun.className = 'w-28 h-28 md:w-36 md:h-36 rounded-full bg-gradient-to-br from-yellow-200 via-yellow-400 to-orange-500 sun-glow float mx-auto relative z-10 transition-all duration-500';
+            heroSun.style.boxShadow = '';
+        }
     } else if (isEveningGolden) {
         body.classList.add('sky-golden');
         setOpacity(stars, '0');
