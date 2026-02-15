@@ -1027,3 +1027,12 @@ function updateAll(lat, lng, locationName) {
 }
 
 // Init is in init.js (loads last)
+
+// Close language dropdown when clicking outside
+document.addEventListener('click', function(e) {
+    const dropdown = document.getElementById('langDropdown');
+    const btn = document.getElementById('langDropdownBtn');
+    if (dropdown && btn && !btn.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.add('hidden');
+    }
+});

@@ -141,12 +141,12 @@
                     <span class="text-xl font-bold">When<span class="text-yellow-300">Sunrise</span></span>
                 </a>
                 <div class="flex items-center gap-3">
-                    <div class="relative group">
-                        <button class="flex items-center gap-1 text-white/70 hover:text-white text-lg md:text-2xl">
+                    <div class="relative" id="langDropdownContainer">
+                        <button id="langDropdownBtn" class="flex items-center gap-1 text-white/70 hover:text-white text-lg md:text-2xl" onclick="document.getElementById('langDropdown').classList.toggle('hidden')">
                             <span id="currentLang">🇺🇸</span>
                             <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                         </button>
-                        <div class="absolute right-0 mt-2 w-44 bg-slate-800/95 backdrop-blur rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 border border-white/10 max-h-[70vh] overflow-y-auto">
+                        <div id="langDropdown" class="hidden absolute right-0 mt-2 w-44 bg-slate-800/95 backdrop-blur rounded-lg shadow-xl z-50 border border-white/10 max-h-[70vh] overflow-y-auto">
                             <a href="/" class="block px-3 py-2 text-sm hover:bg-white/10 rounded-t-lg bg-white/5">🇺🇸 English</a>
                             <a href="/ar/" class="block px-3 py-2 text-sm hover:bg-white/10">🇸🇦 العربية</a>
                             <a href="/ur/" class="block px-3 py-2 text-sm hover:bg-white/10">🇵🇰 اردو</a>
