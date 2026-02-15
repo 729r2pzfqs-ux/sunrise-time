@@ -29,6 +29,8 @@ const i18n = {
 let currentLang = 'en';
 let currentLat = null;
 let currentLng = null;
+let use12HourFormat = false; // Toggle between 24h and AM/PM
+let currentLocationName = ''; // Track current location for US detection
 
 // ============== SUN CALCULATIONS ==============
 // Based on NOAA Solar Calculator algorithms
@@ -213,6 +215,66 @@ function formatTime12(date, lng) {
     return `${hours12}:${String(minutes).padStart(2, '0')} ${period}`;
 }
 
+// Format time based on user preference (24h or AM/PM)
+function formatTimeDisplay(date, lng) {
+    if (!date) return '--:--';
+    return use12HourFormat ? formatTime12(date, lng) : formatTime(date, lng);
+}
+
+// Check if location is in US (default to AM/PM)
+function isUSLocation(locationName) {
+    if (!locationName) return false;
+    const lower = locationName.toLowerCase();
+    return lower.includes(', us') || 
+           lower.includes('usa') || 
+           lower.includes('united states') ||
+           lower.endsWith(', usa');
+}
+
+// Initialize time format preference
+function initTimeFormat(locationName) {
+    const savedPref = localStorage.getItem('timeFormat');
+    if (savedPref !== null) {
+        use12HourFormat = savedPref === '12h';
+    } else {
+        // Default: US gets AM/PM, others get 24h
+        use12HourFormat = isUSLocation(locationName);
+    }
+}
+
+// Toggle time format and refresh display
+function toggleTimeFormat() {
+    use12HourFormat = !use12HourFormat;
+    localStorage.setItem('timeFormat', use12HourFormat ? '12h' : '24h');
+    // Refresh the display
+    if (currentLat && currentLng) {
+        const sunTimes = getSunTimes(new Date(), currentLat, currentLng);
+        refreshTimeDisplays(sunTimes, currentLng);
+        updateTimeline(sunTimes);
+        update7DayForecast(currentLat, currentLng);
+    }
+}
+
+// Refresh all time displays with current format
+function refreshTimeDisplays(sunTimes, lng) {
+    const sunriseEl = document.getElementById('sunriseTime');
+    const sunsetEl = document.getElementById('sunsetTime');
+    if (sunriseEl) sunriseEl.textContent = formatTimeDisplay(sunTimes.sunrise, lng);
+    if (sunsetEl) sunsetEl.textContent = formatTimeDisplay(sunTimes.sunset, lng);
+    
+    const solarNoonEl = document.getElementById('solarNoon');
+    if (solarNoonEl) solarNoonEl.textContent = formatTimeDisplay(sunTimes.solarNoon, lng);
+    
+    const goldenMorningEl = document.getElementById('goldenMorning');
+    const goldenEveningEl = document.getElementById('goldenEvening');
+    if (goldenMorningEl && sunTimes.goldenHourMorningStart) {
+        goldenMorningEl.textContent = `${formatTimeDisplay(sunTimes.goldenHourMorningStart, lng)} - ${formatTimeDisplay(sunTimes.goldenHourMorningEnd, lng)}`;
+    }
+    if (goldenEveningEl && sunTimes.goldenHourEveningStart) {
+        goldenEveningEl.textContent = `${formatTimeDisplay(sunTimes.goldenHourEveningStart, lng)} - ${formatTimeDisplay(sunTimes.goldenHourEveningEnd, lng)}`;
+    }
+}
+
 // ============== UI UPDATES ==============
 
 function setOpacity(element, opacity) {
@@ -383,7 +445,7 @@ function updateTimeline(sunTimes) {
                 <div class="flex-1 pb-4">
                     <div class="flex items-center justify-between">
                         <p class="font-semibold">${event.name}</p>
-                        <p class="text-yellow-300 font-mono">${formatTime(event.time)}</p>
+                        <p class="text-yellow-300 font-mono">${formatTimeDisplay(event.time, currentLng)}</p>
                     </div>
                     <p class="text-white/50 text-sm">${event.desc}</p>
                 </div>
@@ -429,8 +491,8 @@ function update7DayForecast(lat, lng) {
                 <p class="text-xs text-white/60 mb-1">${isToday ? 'Today' : dayNames[day.date.getDay()]}</p>
                 <p class="text-xs font-medium mb-2">${day.date.getDate()}/${day.date.getMonth() + 1}</p>
                 <div class="space-y-1">
-                    <p class="forecast-sunrise text-sm whitespace-nowrap">↑ ${formatTime(day.sunrise, lng)}</p>
-                    <p class="forecast-sunset text-sm whitespace-nowrap">↓ ${formatTime(day.sunset, lng)}</p>
+                    <p class="forecast-sunrise text-sm whitespace-nowrap">↑ ${formatTimeDisplay(day.sunrise, lng)}</p>
+                    <p class="forecast-sunset text-sm whitespace-nowrap">↓ ${formatTimeDisplay(day.sunset, lng)}</p>
                 </div>
                 <p class="text-xs text-white/40 mt-2">${hours}h ${mins}m</p>
             </div>
@@ -456,11 +518,21 @@ function updateUI(lat, lng, locationName) {
         });
     }
     
-    // Update main times
+    // Update main times (with click-to-toggle format)
     const sunriseEl = document.getElementById('sunriseTime');
     const sunsetEl = document.getElementById('sunsetTime');
-    if (sunriseEl) sunriseEl.textContent = formatTime(sunTimes.sunrise);
-    if (sunsetEl) sunsetEl.textContent = formatTime(sunTimes.sunset);
+    if (sunriseEl) {
+        sunriseEl.textContent = formatTimeDisplay(sunTimes.sunrise, lng);
+        sunriseEl.style.cursor = 'pointer';
+        sunriseEl.title = 'Tap to toggle 24h/AM-PM';
+        sunriseEl.onclick = toggleTimeFormat;
+    }
+    if (sunsetEl) {
+        sunsetEl.textContent = formatTimeDisplay(sunTimes.sunset, lng);
+        sunsetEl.style.cursor = 'pointer';
+        sunsetEl.title = 'Tap to toggle 24h/AM-PM';
+        sunsetEl.onclick = toggleTimeFormat;
+    }
     
     // Day length
     if (sunTimes.sunrise && sunTimes.sunset) {
@@ -473,16 +545,16 @@ function updateUI(lat, lng, locationName) {
     
     // Solar noon
     const solarNoonEl = document.getElementById('solarNoon');
-    if (solarNoonEl) solarNoonEl.textContent = formatTime(sunTimes.solarNoon);
+    if (solarNoonEl) solarNoonEl.textContent = formatTimeDisplay(sunTimes.solarNoon, lng);
     
     // Golden hours
     const goldenMorningEl = document.getElementById('goldenMorning');
     const goldenEveningEl = document.getElementById('goldenEvening');
     if (goldenMorningEl && sunTimes.goldenHourMorningStart && sunTimes.goldenHourMorningEnd) {
-        goldenMorningEl.textContent = `${formatTime(sunTimes.goldenHourMorningStart)} - ${formatTime(sunTimes.goldenHourMorningEnd)}`;
+        goldenMorningEl.textContent = `${formatTimeDisplay(sunTimes.goldenHourMorningStart, lng)} - ${formatTimeDisplay(sunTimes.goldenHourMorningEnd, lng)}`;
     }
     if (goldenEveningEl && sunTimes.goldenHourEveningStart && sunTimes.goldenHourEveningEnd) {
-        goldenEveningEl.textContent = `${formatTime(sunTimes.goldenHourEveningStart)} - ${formatTime(sunTimes.goldenHourEveningEnd)}`;
+        goldenEveningEl.textContent = `${formatTimeDisplay(sunTimes.goldenHourEveningStart, lng)} - ${formatTimeDisplay(sunTimes.goldenHourEveningEnd, lng)}`;
     }
     
     // Update sky gradient
@@ -926,6 +998,8 @@ async function fetchWeather(lat, lng, locationName) {
 
 function updateAll(lat, lng, locationName) {
     console.log('updateAll called:', { lat, lng, locationName });
+    currentLocationName = locationName; // Store for time format detection
+    initTimeFormat(locationName); // Initialize time format (US gets AM/PM by default)
     try { updateUI(lat, lng, locationName); console.log('updateUI done'); } catch(e) { console.error('updateUI error:', e); }
     try { updatePrayerTimesUI(lat, lng); console.log('updatePrayerTimesUI done'); } catch(e) { console.error('updatePrayerTimesUI error:', e); }
     try { updateMoonUI(lat, lng); console.log('updateMoonUI done'); } catch(e) { console.error('updateMoonUI error:', e); }
