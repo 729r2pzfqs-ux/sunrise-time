@@ -888,12 +888,30 @@ function updateCurrentTime() {
     if (localHours < 0) localHours += 24;
     if (localHours >= 24) localHours -= 24;
     
-    const h = String(localHours).padStart(2, '0');
     const m = String(now.getUTCMinutes()).padStart(2, '0');
     const s = String(now.getUTCSeconds()).padStart(2, '0');
     
-    timeEl.textContent = `${h}:${m}:${s}`;
+    if (use12HourFormat) {
+        const period = localHours >= 12 ? 'pm' : 'am';
+        const h12 = localHours % 12 || 12;
+        timeEl.textContent = `${h12}:${m}:${s}${period}`;
+    } else {
+        const h = String(localHours).padStart(2, '0');
+        timeEl.textContent = `${h}:${m}:${s}`;
+    }
 }
+
+// Add click handler for time toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const timeEl = document.getElementById('currentTime');
+    if (timeEl) {
+        timeEl.style.cursor = 'pointer';
+        timeEl.title = 'Tap to toggle 12h/24h';
+        timeEl.addEventListener('click', function() {
+            toggleTimeFormat();
+        });
+    }
+});
 
 // Start clock
 setInterval(updateCurrentTime, 1000);
