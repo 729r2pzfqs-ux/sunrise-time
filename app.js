@@ -302,10 +302,23 @@ function updateSkyGradient(sunTimes, lng) {
         return;
     }
     
-    // Use UTC timestamps for accurate comparison
-    const nowMs = Date.now();
-    const sunriseMs = sunTimes.sunrise.getTime();
-    const sunsetMs = sunTimes.sunset.getTime();
+    // Calculate current time at the target location using longitude
+    // Each 15 degrees = 1 hour offset from UTC
+    const locationOffsetHours = lng / 15;
+    const utcNow = new Date();
+    const utcHours = utcNow.getUTCHours() + utcNow.getUTCMinutes() / 60;
+    const localHoursAtLocation = (utcHours + locationOffsetHours + 24) % 24;
+    
+    // Get sunrise/sunset in local hours at target location
+    const sunriseUTC = sunTimes.sunrise.getUTCHours() + sunTimes.sunrise.getUTCMinutes() / 60;
+    const sunsetUTC = sunTimes.sunset.getUTCHours() + sunTimes.sunset.getUTCMinutes() / 60;
+    const sunriseLocal = (sunriseUTC + locationOffsetHours + 24) % 24;
+    const sunsetLocal = (sunsetUTC + locationOffsetHours + 24) % 24;
+    
+    // Convert to milliseconds from midnight for period calculations
+    const nowMs = localHoursAtLocation * 60 * 60 * 1000;
+    const sunriseMs = sunriseLocal * 60 * 60 * 1000;
+    const sunsetMs = sunsetLocal * 60 * 60 * 1000;
     
     // Define time periods (in milliseconds)
     const oneHour = 60 * 60 * 1000;
@@ -316,10 +329,11 @@ function updateSkyGradient(sunTimes, lng) {
     const morningGoldenEndMs = sunriseMs + oneHour;
     const eveningGoldenStartMs = sunsetMs - oneHour;
     
-    console.log('Sky debug (UTC):', {
-        now: new Date(nowMs).toISOString(),
-        sunrise: sunTimes.sunrise.toISOString(),
-        sunset: sunTimes.sunset.toISOString()
+    console.log('Sky debug (local hours at location):', {
+        nowLocal: localHoursAtLocation.toFixed(2),
+        sunriseLocal: sunriseLocal.toFixed(2),
+        sunsetLocal: sunsetLocal.toFixed(2),
+        locationOffsetHours: locationOffsetHours.toFixed(1)
     });
     
     // Determine sky state
