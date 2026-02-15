@@ -425,12 +425,12 @@ function update7DayForecast(lat, lng) {
         const isToday = i === 0;
         
         return `
-            <div class="text-center p-3 rounded-xl ${isToday ? 'bg-yellow-500/20 ring-1 ring-yellow-400/50' : 'bg-white/5'}">
+            <div class="text-center p-3 rounded-xl forecast-card ${isToday ? 'today' : ''}">
                 <p class="text-xs text-white/60 mb-1">${isToday ? 'Today' : dayNames[day.date.getDay()]}</p>
                 <p class="text-xs font-medium mb-2">${day.date.getDate()}/${day.date.getMonth() + 1}</p>
                 <div class="space-y-1">
-                    <p class="text-yellow-300 text-sm">↑ ${formatTime(day.sunrise, lng)}</p>
-                    <p class="text-orange-400 text-sm">↓ ${formatTime(day.sunset, lng)}</p>
+                    <p class="forecast-sunrise text-sm">↑ ${formatTime(day.sunrise, lng)}</p>
+                    <p class="forecast-sunset text-sm">↓ ${formatTime(day.sunset, lng)}</p>
                 </div>
                 <p class="text-xs text-white/40 mt-2">${hours}h ${mins}m</p>
             </div>
