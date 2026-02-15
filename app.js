@@ -605,12 +605,12 @@ async function detectLocation() {
                 // Fallback to IP-based location or default
                 console.log('Geolocation denied, using default');
                 const input = document.getElementById('locationSearch');
-                if (input) input.value = 'London, UK';
-                updateAll(51.5074, -0.1278, 'London, UK');
+                if (input) input.value = 'Paris, France';
+                updateAll(48.8566, 2.3522, 'Paris, France');
             }
         );
     } else {
-        updateAll(51.5074, -0.1278, 'London, UK');
+        updateAll(48.8566, 2.3522, 'Paris, France');
     }
 }
 
