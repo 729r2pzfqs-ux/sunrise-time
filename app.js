@@ -822,12 +822,52 @@ setInterval(updateCurrentTime, 1000);
 
 // ============== WEATHER ==============
 
-async function fetchWeather(lat, lng) {
+// Temperature unit preference
+let tempUnit = 'C'; // 'C' or 'F'
+let currentTempCelsius = null;
+
+function updateTempDisplay() {
+    const tempEl = document.getElementById('currentTemp');
+    if (!tempEl || currentTempCelsius === null) return;
+    
+    if (tempUnit === 'F') {
+        const tempF = Math.round(currentTempCelsius * 9/5 + 32);
+        tempEl.textContent = `${tempF}°F`;
+    } else {
+        tempEl.textContent = `${Math.round(currentTempCelsius)}°C`;
+    }
+}
+
+function toggleTempUnit() {
+    tempUnit = tempUnit === 'C' ? 'F' : 'C';
+    updateTempDisplay();
+}
+
+function isUSCity(locationName) {
+    if (!locationName) return false;
+    const name = locationName.toLowerCase();
+    return name.includes('usa') || name.includes('united states') || 
+           name.endsWith(', us') || name.includes(', us,');
+}
+
+async function fetchWeather(lat, lng, locationName) {
     const tempEl = document.getElementById('currentTemp');
     const weatherEl = document.getElementById('weatherIcon');
     
-    console.log('fetchWeather called:', { lat, lng });
+    console.log('fetchWeather called:', { lat, lng, locationName });
     if (!tempEl) { console.log('No tempEl found'); return; }
+    
+    // Set default unit based on location (US = Fahrenheit)
+    if (isUSCity(locationName)) {
+        tempUnit = 'F';
+    } else {
+        tempUnit = 'C';
+    }
+    
+    // Make temp clickable
+    tempEl.style.cursor = 'pointer';
+    tempEl.title = 'Click to switch °C/°F';
+    tempEl.onclick = toggleTempUnit;
     
     try {
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,weather_code&timezone=auto`;
@@ -837,8 +877,8 @@ async function fetchWeather(lat, lng) {
         console.log('Weather response:', data);
         
         if (data.current) {
-            const temp = Math.round(data.current.temperature_2m);
-            tempEl.textContent = `${temp}°C`;
+            currentTempCelsius = data.current.temperature_2m;
+            updateTempDisplay();
             
             // Weather code to emoji
             const code = data.current.weather_code;
@@ -865,7 +905,7 @@ function updateAll(lat, lng, locationName) {
     try { updateUI(lat, lng, locationName); console.log('updateUI done'); } catch(e) { console.error('updateUI error:', e); }
     try { updatePrayerTimesUI(lat, lng); console.log('updatePrayerTimesUI done'); } catch(e) { console.error('updatePrayerTimesUI error:', e); }
     try { updateMoonUI(lat, lng); console.log('updateMoonUI done'); } catch(e) { console.error('updateMoonUI error:', e); }
-    try { fetchWeather(lat, lng); console.log('fetchWeather called'); } catch(e) { console.error('fetchWeather error:', e); }
+    try { fetchWeather(lat, lng, locationName); console.log('fetchWeather called'); } catch(e) { console.error('fetchWeather error:', e); }
     try { updateCurrentTime(); console.log('updateCurrentTime done'); } catch(e) { console.error('updateCurrentTime error:', e); }
 }
 
