@@ -591,7 +591,7 @@ function updateMoonUI(lat, lng) {
     const moon = getMoonPhase(today);
     const moonTimes = getMoonTimes(today, lat, lng);
     
-    const moonEmoji = document.getElementById('moonEmoji');
+    const moonVisual = document.getElementById('moonVisual');
     const moonPhaseName = document.getElementById('moonPhaseName');
     const moonIllumination = document.getElementById('moonIllumination');
     const nextFullMoon = document.getElementById('nextFullMoon');
@@ -599,7 +599,50 @@ function updateMoonUI(lat, lng) {
     const moonrise = document.getElementById('moonrise');
     const moonset = document.getElementById('moonset');
     
-    if (moonEmoji) moonEmoji.textContent = moon.emoji;
+    // Update moon visual SVG based on phase
+    if (moonVisual) {
+        const phase = moon.phase;
+        // phase: 0 = new moon, 0.5 = full moon
+        // Calculate shadow position and curve
+        let shadowSvg = '';
+        
+        if (phase < 0.03 || phase > 0.97) {
+            // New moon - fully dark
+            shadowSvg = '<circle cx="50" cy="50" r="44" fill="#1a1a2e"/>';
+        } else if (phase >= 0.47 && phase <= 0.53) {
+            // Full moon - no shadow
+            shadowSvg = '';
+        } else if (phase < 0.5) {
+            // Waxing (right side lit) - shadow on left
+            const curveX = 50 - (phase * 2) * 90; // shadow curve
+            shadowSvg = `<path d="M 50,6 A 44,44 0 0 0 50,94 Q ${curveX},50 50,6" fill="#1a1a2e"/>`;
+        } else {
+            // Waning (left side lit) - shadow on right
+            const curveX = 50 + ((phase - 0.5) * 2) * 90;
+            shadowSvg = `<path d="M 50,6 A 44,44 0 0 1 50,94 Q ${curveX},50 50,6" fill="#1a1a2e"/>`;
+        }
+        
+        moonVisual.innerHTML = `
+            <svg viewBox="0 0 100 100" class="w-full h-full">
+                <defs>
+                    <linearGradient id="moonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#f5f5f5"/>
+                        <stop offset="100%" stop-color="#d4d4d4"/>
+                    </linearGradient>
+                </defs>
+                <!-- Moon base -->
+                <circle cx="50" cy="50" r="44" fill="url(#moonGrad)"/>
+                <!-- Craters -->
+                <circle cx="35" cy="35" r="6" fill="#c4c4c4" opacity="0.4"/>
+                <circle cx="60" cy="55" r="9" fill="#c4c4c4" opacity="0.3"/>
+                <circle cx="45" cy="65" r="5" fill="#c4c4c4" opacity="0.35"/>
+                <circle cx="68" cy="32" r="4" fill="#c4c4c4" opacity="0.25"/>
+                <!-- Shadow -->
+                ${shadowSvg}
+            </svg>
+        `;
+    }
+    
     if (moonPhaseName) moonPhaseName.textContent = moon.phaseName;
     if (moonIllumination) moonIllumination.textContent = `${moon.illumination}% illuminated`;
     
