@@ -89,18 +89,71 @@
     
     <!-- Custom SVG Icons -->
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <!-- Shared Defs - must be at top level for browser compatibility -->
+        <defs>
+            <linearGradient id="globeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#60a5fa"/>
+                <stop offset="100%" stop-color="#3b82f6"/>
+            </linearGradient>
+            <linearGradient id="sunnyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fde68a"/>
+                <stop offset="100%" stop-color="#f59e0b"/>
+            </linearGradient>
+            <linearGradient id="locationGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fbbf24"/>
+                <stop offset="100%" stop-color="#f59e0b"/>
+            </linearGradient>
+            <linearGradient id="clockGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fde68a"/>
+                <stop offset="100%" stop-color="#f59e0b"/>
+            </linearGradient>
+            <linearGradient id="riseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fde68a"/>
+                <stop offset="100%" stop-color="#f59e0b"/>
+            </linearGradient>
+            <linearGradient id="setGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fed7aa"/>
+                <stop offset="100%" stop-color="#ea580c"/>
+            </linearGradient>
+            <linearGradient id="mosqueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fde68a"/>
+                <stop offset="100%" stop-color="#f59e0b"/>
+            </linearGradient>
+            <linearGradient id="moonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fef9c3"/>
+                <stop offset="100%" stop-color="#d4d4d4"/>
+            </linearGradient>
+            <linearGradient id="calGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#93c5fd"/>
+                <stop offset="100%" stop-color="#3b82f6"/>
+            </linearGradient>
+            <linearGradient id="dayGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fde68a"/>
+                <stop offset="100%" stop-color="#fbbf24"/>
+            </linearGradient>
+            <linearGradient id="noonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fef08a"/>
+                <stop offset="100%" stop-color="#f59e0b"/>
+            </linearGradient>
+            <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fcd34d"/>
+                <stop offset="100%" stop-color="#f59e0b"/>
+            </linearGradient>
+            <linearGradient id="goldPmGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fdba74"/>
+                <stop offset="100%" stop-color="#ea580c"/>
+            </linearGradient>
+            <filter id="iconShadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#000" flood-opacity="0.3"/>
+            </filter>
+        </defs>
+        
         <!-- Globe/World -->
         <symbol id="icon-globe" viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="10" fill="none" stroke="url(#globeGrad)" stroke-width="1.5"/>
             <ellipse cx="12" cy="12" rx="4" ry="10" fill="none" stroke="url(#globeGrad)" stroke-width="1.5"/>
             <path d="M2 12h20" stroke="url(#globeGrad)" stroke-width="1.5"/>
             <path d="M4 7h16M4 17h16" stroke="url(#globeGrad)" stroke-width="1.2" opacity="0.6"/>
-            <defs>
-                <linearGradient id="globeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#60a5fa"/>
-                    <stop offset="100%" stop-color="#3b82f6"/>
-                </linearGradient>
-            </defs>
         </symbol>
         
         <!-- Weather Sun with Cloud -->
@@ -113,26 +166,11 @@
                 <line x1="15" y1="4" x2="13.5" y2="5.5"/><line x1="6.5" y1="12.5" x2="5" y2="14"/>
             </g>
             <path d="M7 18h12a4 4 0 000-8h-.35a5.5 5.5 0 00-10.15 1" fill="white" opacity="0.3" stroke="white" stroke-width="1.5"/>
-            <defs>
-                <linearGradient id="sunnyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#fde68a"/>
-                    <stop offset="100%" stop-color="#f59e0b"/>
-                </linearGradient>
-            </defs>
         </symbol>
         
         <!-- Location Pin -->
         <symbol id="icon-location" viewBox="0 0 24 24">
-            <defs>
-                <linearGradient id="locationGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#fbbf24"/>
-                    <stop offset="100%" stop-color="#f59e0b"/>
-                </linearGradient>
-                <filter id="locShadow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#000" flood-opacity="0.35"/>
-                </filter>
-            </defs>
-            <g filter="url(#locShadow)">
+            <g filter="url(#iconShadow)">
                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="url(#locationGrad)" stroke="#92400e" stroke-width="1"/>
                 <circle cx="12" cy="9" r="2.5" fill="white"/>
             </g>
@@ -140,16 +178,7 @@
         
         <!-- Clock -->
         <symbol id="icon-clock" viewBox="0 0 24 24">
-            <defs>
-                <linearGradient id="clockGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#fde68a"/>
-                    <stop offset="100%" stop-color="#f59e0b"/>
-                </linearGradient>
-                <filter id="clockShadow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#000" flood-opacity="0.35"/>
-                </filter>
-            </defs>
-            <g filter="url(#clockShadow)">
+            <g filter="url(#iconShadow)">
                 <circle cx="12" cy="12" r="10" fill="none" stroke="#92400e" stroke-width="2"/>
                 <circle cx="12" cy="12" r="8" fill="url(#clockGrad)" opacity="0.25"/>
                 <path d="M12 6v6l4 2" stroke="#78350f" stroke-width="2.5" stroke-linecap="round"/>
@@ -159,16 +188,7 @@
         
         <!-- Sunrise -->
         <symbol id="icon-sunrise" viewBox="0 0 48 48">
-            <defs>
-                <linearGradient id="riseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#fde68a"/>
-                    <stop offset="100%" stop-color="#f59e0b"/>
-                </linearGradient>
-                <filter id="riseShadow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000" flood-opacity="0.3"/>
-                </filter>
-            </defs>
-            <g filter="url(#riseShadow)">
+            <g filter="url(#iconShadow)">
                 <path d="M6 38h36" stroke="#047857" stroke-width="3" stroke-linecap="round"/>
                 <circle cx="24" cy="26" r="8" fill="url(#riseGrad)" stroke="#b45309" stroke-width="1.5"/>
                 <g stroke="#b45309" stroke-width="2" stroke-linecap="round">
@@ -182,16 +202,7 @@
         
         <!-- Sunset -->
         <symbol id="icon-sunset" viewBox="0 0 48 48">
-            <defs>
-                <linearGradient id="setGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#fed7aa"/>
-                    <stop offset="100%" stop-color="#ea580c"/>
-                </linearGradient>
-                <filter id="setShadow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000" flood-opacity="0.3"/>
-                </filter>
-            </defs>
-            <g filter="url(#setShadow)">
+            <g filter="url(#iconShadow)">
                 <path d="M6 38h36" stroke="#9a3412" stroke-width="3" stroke-linecap="round"/>
                 <circle cx="24" cy="30" r="8" fill="url(#setGrad)" stroke="#7c2d12" stroke-width="1.5"/>
                 <g stroke="#9a3412" stroke-width="2" stroke-linecap="round">
@@ -211,13 +222,7 @@
             <circle cx="12" cy="5.5" r="1" fill="#fef3c7"/>
             <rect x="2" y="11" width="3" height="8" rx="1" fill="url(#mosqueGrad)" opacity="0.5"/>
             <rect x="19" y="11" width="3" height="8" rx="1" fill="url(#mosqueGrad)" opacity="0.5"/>
-            <defs>
-                <linearGradient id="mosqueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#fde68a"/>
-                    <stop offset="100%" stop-color="#f59e0b"/>
-                </linearGradient>
-            </defs>
-        </symbol>
+</symbol>
         
         <!-- Moon -->
         <symbol id="icon-moon" viewBox="0 0 24 24">
@@ -225,13 +230,7 @@
             <circle cx="9" cy="8" r="1" fill="#d1d5db" opacity="0.4"/>
             <circle cx="13" cy="14" r="1.5" fill="#d1d5db" opacity="0.3"/>
             <circle cx="8" cy="13" r="0.8" fill="#d1d5db" opacity="0.35"/>
-            <defs>
-                <linearGradient id="moonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#fef9c3"/>
-                    <stop offset="100%" stop-color="#d4d4d4"/>
-                </linearGradient>
-            </defs>
-        </symbol>
+</symbol>
         
         <!-- Calendar -->
         <symbol id="icon-calendar" viewBox="0 0 24 24">
@@ -244,13 +243,7 @@
             <circle cx="16" cy="14" r="1.2" fill="url(#calGrad)"/>
             <circle cx="8" cy="18" r="1.2" fill="url(#calGrad)" opacity="0.5"/>
             <circle cx="12" cy="18" r="1.2" fill="url(#calGrad)" opacity="0.5"/>
-            <defs>
-                <linearGradient id="calGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#93c5fd"/>
-                    <stop offset="100%" stop-color="#3b82f6"/>
-                </linearGradient>
-            </defs>
-        </symbol>
+</symbol>
         
         <!-- Day Length -->
         <symbol id="icon-daylength" viewBox="0 0 24 24">
@@ -258,13 +251,7 @@
             <path d="M12 3a9 9 0 010 18" fill="url(#dayGrad)" opacity="0.3"/>
             <circle cx="12" cy="12" r="3" fill="url(#dayGrad)"/>
             <path d="M12 6v1M12 17v1M6 12h1M17 12h1" stroke="url(#dayGrad)" stroke-width="1.5" stroke-linecap="round"/>
-            <defs>
-                <linearGradient id="dayGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#fde68a"/>
-                    <stop offset="100%" stop-color="#fbbf24"/>
-                </linearGradient>
-            </defs>
-        </symbol>
+</symbol>
         
         <!-- Solar Noon -->
         <symbol id="icon-solarnoon" viewBox="0 0 24 24">
@@ -277,39 +264,21 @@
             </g>
             <path d="M6 22h12" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/>
             <path d="M9 22v-2M15 22v-2" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/>
-            <defs>
-                <linearGradient id="noonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#fef08a"/>
-                    <stop offset="100%" stop-color="#f59e0b"/>
-                </linearGradient>
-            </defs>
-        </symbol>
+</symbol>
         
         <!-- Golden Hour Camera -->
         <symbol id="icon-goldenhour" viewBox="0 0 24 24">
             <path d="M14.5 4h-5L7 7H4a2 2 0 00-2 2v9a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2h-3l-2.5-3z" fill="none" stroke="url(#goldGrad)" stroke-width="1.5"/>
             <circle cx="12" cy="13" r="4" fill="url(#goldGrad)" opacity="0.3" stroke="url(#goldGrad)" stroke-width="1.5"/>
             <circle cx="12" cy="13" r="2" fill="url(#goldGrad)"/>
-            <defs>
-                <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#fcd34d"/>
-                    <stop offset="100%" stop-color="#f59e0b"/>
-                </linearGradient>
-            </defs>
-        </symbol>
+</symbol>
         
         <!-- Golden Hour PM (Sunset Camera) -->
         <symbol id="icon-goldenhourpm" viewBox="0 0 24 24">
             <path d="M14.5 4h-5L7 7H4a2 2 0 00-2 2v9a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2h-3l-2.5-3z" fill="none" stroke="url(#goldPmGrad)" stroke-width="1.5"/>
             <circle cx="12" cy="13" r="4" fill="url(#goldPmGrad)" opacity="0.3" stroke="url(#goldPmGrad)" stroke-width="1.5"/>
             <circle cx="12" cy="13" r="2" fill="url(#goldPmGrad)"/>
-            <defs>
-                <linearGradient id="goldPmGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#fdba74"/>
-                    <stop offset="100%" stop-color="#ea580c"/>
-                </linearGradient>
-            </defs>
-        </symbol>
+</symbol>
     </svg>
     
     <style>
@@ -484,13 +453,7 @@
                                 <line x1="0" y1="50" x2="8" y2="50" opacity="0.5"/>
                                 <line x1="92" y1="50" x2="100" y2="50" opacity="0.5"/>
                             </g>
-                            <defs>
-                                <linearGradient id="rayGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" style="stop-color:#FFD700"/>
-                                    <stop offset="100%" style="stop-color:#FF8C00"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
+</svg>
                         <!-- Main sun/moon -->
                         <div id="heroSun" class="w-28 h-28 md:w-36 md:h-36 rounded-full bg-gradient-to-br from-yellow-200 via-yellow-400 to-orange-500 sun-glow float mx-auto relative z-10 transition-all duration-500"></div>
                         <div class="absolute inset-0 flex items-center justify-center z-20">
@@ -582,13 +545,7 @@
                         <div class="text-center">
                             <div class="w-20 h-20 mx-auto mb-2 relative" id="moonVisual">
                                 <svg viewBox="0 0 100 100" class="w-full h-full">
-                                    <defs>
-                                        <linearGradient id="moonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" stop-color="#f5f5f5"/>
-                                            <stop offset="100%" stop-color="#d4d4d4"/>
-                                        </linearGradient>
-                                    </defs>
-                                    <circle cx="50" cy="50" r="45" fill="url(#moonGrad)"/>
+<circle cx="50" cy="50" r="45" fill="url(#moonGrad)"/>
                                     <circle cx="35" cy="35" r="8" fill="#c4c4c4" opacity="0.4"/>
                                     <circle cx="60" cy="55" r="12" fill="#c4c4c4" opacity="0.3"/>
                                     <circle cx="45" cy="65" r="6" fill="#c4c4c4" opacity="0.35"/>
