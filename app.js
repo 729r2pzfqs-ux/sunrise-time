@@ -881,6 +881,13 @@ function updateCurrentTime() {
     const timeEl = document.getElementById('currentTime');
     if (!timeEl || currentLng === null) return;
     
+    // Add click handler for time toggle (mobile-friendly onclick)
+    if (!timeEl.onclick) {
+        timeEl.style.cursor = 'pointer';
+        timeEl.title = 'Tap to toggle 12h/24h';
+        timeEl.onclick = toggleTimeFormat;
+    }
+    
     // Calculate local time based on longitude
     const now = new Date();
     const tzOffsetHours = Math.round(currentLng / 15);
@@ -900,18 +907,6 @@ function updateCurrentTime() {
         timeEl.textContent = `${h}:${m}:${s}`;
     }
 }
-
-// Add click handler for time toggle
-document.addEventListener('DOMContentLoaded', function() {
-    const timeEl = document.getElementById('currentTime');
-    if (timeEl) {
-        timeEl.style.cursor = 'pointer';
-        timeEl.title = 'Tap to toggle 12h/24h';
-        timeEl.addEventListener('click', function() {
-            toggleTimeFormat();
-        });
-    }
-});
 
 // Start clock
 setInterval(updateCurrentTime, 1000);
