@@ -880,15 +880,39 @@ async function fetchWeather(lat, lng, locationName) {
             currentTempCelsius = data.current.temperature_2m;
             updateTempDisplay();
             
-            // Weather code to emoji
+            // Weather code to emoji (WMO codes)
             const code = data.current.weather_code;
-            let emoji = '☀️';
-            if (code === 0) emoji = '☀️';
-            else if (code <= 3) emoji = '⛅';
-            else if (code <= 49) emoji = '🌫️';
-            else if (code <= 69) emoji = '🌧️';
-            else if (code <= 79) emoji = '🌨️';
-            else if (code <= 99) emoji = '⛈️';
+            const weatherMap = {
+                0: '☀️',      // Clear sky
+                1: '🌤️',     // Mainly clear
+                2: '⛅',      // Partly cloudy
+                3: '☁️',      // Overcast
+                45: '🌫️',    // Fog
+                48: '🌫️',    // Depositing rime fog
+                51: '🌦️',    // Light drizzle
+                53: '🌦️',    // Moderate drizzle
+                55: '🌧️',    // Dense drizzle
+                56: '🌧️❄️',  // Freezing drizzle light
+                57: '🌧️❄️',  // Freezing drizzle dense
+                61: '🌧️',    // Slight rain
+                63: '🌧️',    // Moderate rain
+                65: '🌧️💨',  // Heavy rain
+                66: '🌧️❄️',  // Freezing rain light
+                67: '🌧️❄️',  // Freezing rain heavy
+                71: '🌨️',    // Slight snow
+                73: '🌨️',    // Moderate snow
+                75: '❄️',     // Heavy snow
+                77: '🌨️',    // Snow grains
+                80: '🌦️',    // Slight rain showers
+                81: '🌧️',    // Moderate rain showers
+                82: '⛈️',     // Violent rain showers
+                85: '🌨️',    // Slight snow showers
+                86: '❄️💨',   // Heavy snow showers
+                95: '⛈️',     // Thunderstorm
+                96: '⛈️🌨️',  // Thunderstorm with slight hail
+                99: '⛈️❄️'   // Thunderstorm with heavy hail
+            };
+            const emoji = weatherMap[code] || '🌡️';
             
             if (weatherEl) weatherEl.textContent = emoji;
         }
