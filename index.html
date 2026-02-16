@@ -294,8 +294,8 @@
         /* Fix: Hide emoji in center of sun and sun rays */
         #sunMoonEmoji { display: none; }
         #sunRays { display: none; }
-        /* Numbers inherit text color from theme */
-        .num-glow { text-shadow: none; }
+        /* Force white numbers in all modes */
+        .num-glow { color: #fff !important; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
         .forecast-card { background: rgba(255,255,255,0.15); }
         .forecast-card.today { background: rgba(251, 191, 36, 0.3); box-shadow: inset 0 0 0 2px rgba(251, 191, 36, 0.6); }
         .forecast-sunrise { color: #059669; }
