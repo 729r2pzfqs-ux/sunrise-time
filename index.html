@@ -472,7 +472,7 @@
                         <div class="inline-flex items-center gap-2 glass px-4 py-2 rounded-full w-full">
                             <svg class="w-5 h-5 flex-shrink-0"><use href="#icon-location"/></svg>
                             <input type="text" id="locationSearch" class="bg-transparent border-none outline-none flex-1 text-center placeholder-white/50" placeholder="Search city..." value="">
-                            <button id="detectLocation" class="text-yellow-300 hover:text-yellow-100">
+                            <button id="detectLocation" class="text-yellow-300 hover:text-yellow-100" aria-label="Detect my location">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
                             </button>
                         </div>
@@ -527,7 +527,7 @@
                             <svg class="w-6 h-6"><use href="#icon-mosque"/></svg>
                             Prayer Times
                         </h2>
-                        <select id="prayerMethod" class="bg-white/10 border border-white/20 rounded-lg px-2 py-1 text-sm">
+                        <select id="prayerMethod" class="bg-white/10 border border-white/20 rounded-lg px-2 py-1 text-sm" aria-label="Prayer calculation method">
                             <option value="ISNA">ISNA</option>
                             <option value="MWL">Muslim World League</option>
                             <option value="EGYPT">Egypt</option>

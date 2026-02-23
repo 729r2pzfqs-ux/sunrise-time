@@ -1,7 +1,10 @@
 // Initialize everything after all scripts load
 
 document.addEventListener('DOMContentLoaded', () => {
-    detectLocation();
+    // Default to New York instead of requesting geolocation on page load
+    // User can click the location button to detect their location
+    document.getElementById('locationSearch').value = 'New York, USA';
+    updateAll(40.7128, -74.0060, 'New York, USA');
     setupCitySearch();
     
     // Update every minute
