@@ -1,7 +1,48 @@
-# whensunrise.com
+# WhenSunrise
 
-## About
-WhenSunrise.com provides sunrise and sunset times for any location worldwide. Also includes prayer times, golden hour, blue hour, and twilight information.
+> Accurate sunrise, sunset, twilight, prayer, and moon-phase times for any location on Earth.
 
-## URLs
-- Homepage: https://whensunrise.com/
+WhenSunrise.com is a fast, privacy-friendly tool that computes precise solar and lunar times for any place in the world. Enter a city or detect your location, and the site shows today's sunrise and sunset, golden hour, blue hour, civil and nautical twilight, solar noon, day length (and how it compares to yesterday), live day-progress, Islamic prayer times, and the current moon phase — plus a 7-day forecast. All calculations run client-side in the browser, and the interface is available in 15 languages.
+
+## Features / Content
+- **Sunrise & sunset times** — official times for the current day, adjusted for atmospheric refraction (90.833° zenith).
+- **Twilight phases** — civil dawn/dusk (96°) and nautical dawn/dusk (102°).
+- **Golden hour** — morning (sunrise to +1h) and evening (sunset −1h to sunset), useful for photography.
+- **Blue hour** — morning and evening blue-hour windows (~94° zenith).
+- **Solar noon** — the moment the sun is highest in the sky.
+- **Day length** — total daylight duration, with a comparison to whether the day is longer/shorter than yesterday.
+- **Live day progress** — a real-time indicator updated every minute, with a sky gradient that shifts through dawn, day, golden hour, dusk, and night.
+- **Prayer times** — Fajr, Sunrise, Dhuhr, Asr (Shafi'i shadow method), Maghrib, and Isha, with the next prayer and time remaining. Five calculation methods: ISNA, Muslim World League, Egyptian General Authority, Umm al-Qura (Makkah), and University of Islamic Sciences, Karachi.
+- **Moon phase** — current phase name and emoji, illumination percentage, lunar cycle day, days to next full moon and next new moon, plus upcoming lunar events.
+- **7-day forecast** — sunrise/sunset outlook for the week ahead.
+- **Popular cities** — quick-access buttons for major cities (New York, London, Tokyo, Paris, Dubai, Sydney, Mecca, and more).
+- **City search** — fuzzy search across a built-in list of ~115 major world cities, or detect the user's current location via the browser.
+- **12/24-hour toggle** — tap to switch between AM/PM and 24-hour time formats.
+
+## Sections
+- [Home / English](https://whensunrise.com/): Main app with sunrise, sunset, twilight, prayer, moon, and forecast panels.
+- [Prayer Times](https://whensunrise.com/#prayer-times): Islamic prayer schedule with selectable calculation method.
+- [Moon Phase](https://whensunrise.com/#moon-phase): Current lunar phase, illumination, and upcoming events.
+- [7-Day Forecast](https://whensunrise.com/#forecast): Week-ahead sunrise/sunset outlook.
+
+## URL Patterns
+- `https://whensunrise.com/` — English (default / x-default).
+- `https://whensunrise.com/<lang>/` — localized version per language code, e.g. `https://whensunrise.com/es/`, `https://whensunrise.com/ja/`, `https://whensunrise.com/ar/`.
+- Each language directory contains a single `index.html`; the app is a single-page tool with no per-city URLs (locations are selected in-page via search, geolocation, or popular-city buttons).
+
+## Data Sources / Methodology
+- **Sun position** — sunrise, sunset, twilight, golden hour, blue hour, and solar noon are computed in JavaScript using the NOAA Solar Calculator algorithms (Julian date → Julian century → equation of time, sun declination, and hour-angle solutions for each zenith angle). No external astronomy library is used; all math is implemented in `app.js`.
+- **Prayer times** — derived from the same solar model in `prayer.js`: Fajr and Isha from sun-depression angles per the selected method, Asr from the Shafi'i shadow-factor formula, Dhuhr just after solar noon, Maghrib at sunset.
+- **Moon data** — `moon.js` calculates phase from a known reference new moon (2000-01-06 18:14 UTC) and the 29.53059-day synodic cycle; illumination and event dates follow from cycle position. Moonrise/moonset are approximate.
+- **Time zones** — local times are approximated from longitude (15° ≈ 1 hour) rather than from an IANA time-zone database.
+- **Location** — chosen via in-page city search, browser geolocation (on demand, not on page load), or popular-city buttons. The default location is New York.
+
+## Languages
+English (default), plus Arabic (ar), Bengali (bn), German (de), Spanish (es), French (fr), Hindi (hi), Indonesian (id), Japanese (ja), Malay (ms), Portuguese (pt), Russian (ru), Turkish (tr), Urdu (ur), and Chinese (zh) — 15 in total.
+
+## Notes
+- This is a static site hosted on GitHub Pages (custom domain whensunrise.com).
+- All computation happens in the browser; no server-side processing and no account is required.
+- Geolocation is only requested when the user explicitly taps the location button.
+- Times are based on astronomical algorithms and a longitude-based time-zone approximation; they are intended for general reference and may differ slightly from official almanac or local-authority values, especially at extreme latitudes.
+- Not affiliated with NOAA, any government body, or any Islamic authority; prayer-time methods are named after the organizations whose published parameters they implement.
