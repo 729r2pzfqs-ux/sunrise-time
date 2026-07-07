@@ -1,5 +1,9 @@
 #!/bin/bash
-# Generate remaining language pages
+# ⚠️  OUTDATED — DO NOT RUN. This script generated the initial language pages
+# under the old SunriseTi.me branding. The pages in ar/ bn/ de/ es/ fr/ hi/ id/
+# ja/ ms/ pt/ ru/ tr/ ur/ zh/ have since been rebranded to WhenSunrise.com and
+# edited in place (hreflang, OG tags, privacy links, GA). Running this script
+# would destroy those changes. Kept for reference only.
 
 # Turkish
 cat > tr/index.html << 'EOF'

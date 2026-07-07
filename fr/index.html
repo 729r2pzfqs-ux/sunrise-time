@@ -5,14 +5,40 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="Ghw9PJeronBlBd5q74lXK3iD3QM9KpzWdLCDbVYsXjk">
 <title>Lever et Coucher du Soleil | WhenSunrise.com</title>
+<meta name="description" content="Heures précises de lever et coucher du soleil, horaires de prière et phases de la lune pour toute ville.">
+    <meta property="og:title" content="Lever et Coucher du Soleil | WhenSunrise.com">
+    <meta property="og:description" content="Heures précises de lever et coucher du soleil, horaires de prière et phases de la lune pour toute ville.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://whensunrise.com/fr/">
+    <meta property="og:site_name" content="WhenSunrise.com">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:image" content="https://whensunrise.com/android-chrome-512x512.png">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Lever et Coucher du Soleil | WhenSunrise.com">
+    <meta name="twitter:description" content="Heures précises de lever et coucher du soleil, horaires de prière et phases de la lune pour toute ville.">
+    <meta name="twitter:image" content="https://whensunrise.com/android-chrome-512x512.png">
     <link rel="canonical" href="https://whensunrise.com/fr/">
     <link rel="alternate" hreflang="x-default" href="https://whensunrise.com/">
     <link rel="alternate" hreflang="en" href="https://whensunrise.com/">
+    <link rel="alternate" hreflang="ar" href="https://whensunrise.com/ar/">
+    <link rel="alternate" hreflang="bn" href="https://whensunrise.com/bn/">
+    <link rel="alternate" hreflang="de" href="https://whensunrise.com/de/">
+    <link rel="alternate" hreflang="es" href="https://whensunrise.com/es/">
     <link rel="alternate" hreflang="fr" href="https://whensunrise.com/fr/">
+    <link rel="alternate" hreflang="hi" href="https://whensunrise.com/hi/">
+    <link rel="alternate" hreflang="id" href="https://whensunrise.com/id/">
+    <link rel="alternate" hreflang="ja" href="https://whensunrise.com/ja/">
+    <link rel="alternate" hreflang="ms" href="https://whensunrise.com/ms/">
+    <link rel="alternate" hreflang="pt" href="https://whensunrise.com/pt/">
+    <link rel="alternate" hreflang="ru" href="https://whensunrise.com/ru/">
+    <link rel="alternate" hreflang="tr" href="https://whensunrise.com/tr/">
+    <link rel="alternate" hreflang="ur" href="https://whensunrise.com/ur/">
+    <link rel="alternate" hreflang="zh" href="https://whensunrise.com/zh/">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
     <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png">
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
     <link rel="icon" type="image/svg+xml" href="/sun-icon.svg">
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -223,7 +249,7 @@
 <div class="relative inline-block mb-4"><svg id="sunRays" class="absolute inset-0 w-36 h-36 md:w-44 md:h-44 -m-4 sun-rays opacity-50" viewBox="0 0 100 100"><g fill="none" stroke="url(#rayGrad)" stroke-width="2" stroke-linecap="round"><line x1="50" y1="5" x2="50" y2="15"/><line x1="50" y1="85" x2="50" y2="95"/><line x1="5" y1="50" x2="15" y2="50"/><line x1="85" y1="50" x2="95" y2="50"/><line x1="18" y1="18" x2="25" y2="25"/><line x1="75" y1="75" x2="82" y2="82"/><line x1="82" y1="18" x2="75" y2="25"/><line x1="25" y1="75" x2="18" y2="82"/></g><defs><linearGradient id="rayGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFD700"/><stop offset="100%" stop-color="#ffd89b"/></linearGradient></defs></svg><div class="w-28 h-28 rounded-full bg-gradient-to-br from-yellow-200 via-yellow-400 to-orange-500 sun-glow float mx-auto relative z-10"></div><div class="absolute inset-0 flex items-center justify-center z-20"><span class="text-4xl" id="sunMoonEmoji">☀️</span></div></div>
 <div class="mb-3 relative max-w-md mx-auto"><div class="inline-flex items-center gap-2 glass px-4 py-2 rounded-full w-full"><svg class="w-5 h-5 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg><input type="text" id="locationSearch" class="bg-transparent border-none outline-none flex-1 text-center placeholder-white/50" placeholder="Rechercher..."><button id="detectLocation" class="text-yellow-300"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg></button></div><div id="autocompleteResults" class="autocomplete-results hidden rounded-lg mt-2"></div></div>
 <p class="text-white/60 text-sm mb-2" id="currentDate">Chargement...</p>
-<div class="flex items-center justify-center gap-4 mb-4"><div class="glass px-4 py-2 rounded-full flex items-center gap-2"><svg class="w-6 h-6"><use href="#icon-clock"/></svg><span class="text-2xl font-bold font-mono" id="currentTime" class="num-glow">--:--:--</span></div><div class="glass px-4 py-2 rounded-full flex items-center gap-2"><svg class="w-6 h-6 hidden" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" fill="#FFD700"/><g stroke="#FFD700" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></g></svg><span class="text-xl" id="weatherIcon">☀️</span><span class="text-xl font-semibold" id="currentTemp">--°C</span></div></div>
+<div class="flex items-center justify-center gap-4 mb-4"><div class="glass px-4 py-2 rounded-full flex items-center gap-2"><svg class="w-6 h-6"><use href="#icon-clock"/></svg><span class="text-2xl font-bold font-mono num-glow" id="currentTime">--:--:--</span></div><div class="glass px-4 py-2 rounded-full flex items-center gap-2"><svg class="w-6 h-6 hidden" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" fill="#FFD700"/><g stroke="#FFD700" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></g></svg><span class="text-xl" id="weatherIcon">☀️</span><span class="text-xl font-semibold" id="currentTemp">--°C</span></div></div>
 <div class="grid grid-cols-2 gap-3 max-w-md mx-auto mb-6"><div class="glass rounded-2xl p-4 text-center"><div class="text-4xl mb-2">🌅</div><p class="text-white/60 text-xs mb-1">LEVER</p><p class="text-2xl md:text-3xl font-bold text-white num-glow" id="sunriseTime">--:--</p></div><div class="glass rounded-2xl p-4 text-center"><div class="text-4xl mb-2">🌇</div><p class="text-white/60 text-xs mb-1">COUCHER</p><p class="text-2xl md:text-3xl font-bold text-white num-glow" id="sunsetTime">--:--</p></div></div>
 <div class="max-w-md mx-auto mb-6"><div class="flex justify-between text-xs text-white/60 mb-1"><span>Progression</span><span id="dayProgressPercent" class="num-glow">0%</span></div><div class="h-2 bg-white/10 rounded-full overflow-hidden"><div class="h-full day-progress rounded-full" id="dayProgressBar" style="width:0%"></div></div></div>
 </section>
@@ -233,10 +259,7 @@
 <section class="glass rounded-2xl p-5 mb-6"><h2 class="text-lg font-semibold mb-4 flex items-center gap-2"><svg class="w-6 h-6"><use href="#icon-calendar"/></svg>7 Jours</h2><div class="overflow-x-auto"><div class="grid grid-cols-7 gap-2 min-w-[560px]" id="forecast"></div></div></section>
 <section class="glass rounded-2xl p-5"><h2 class="text-lg font-semibold mb-4">🌍 Villes Populaires</h2><div class="flex flex-wrap gap-2"><button class="city-btn glass-dark px-3 py-2 rounded-lg text-sm hover:bg-white/10" data-lat="48.8566" data-lng="2.3522">Paris</button><button class="city-btn glass-dark px-3 py-2 rounded-lg text-sm hover:bg-white/10" data-lat="33.5731" data-lng="-7.5898">Casablanca</button></div></section>
 </div></main>
-<footer class="py-6 px-4 border-t border-white/10"><div class="max-w-5xl mx-auto text-center text-white/40 text-sm"><p>© 2026 WhenSunrise.com</p></div></footer>
+<footer class="py-6 px-4 border-t border-white/10"><div class="max-w-5xl mx-auto text-center text-white/40 text-sm"><p>© 2026 WhenSunrise.com</p><p class="mt-2"><a href="/privacy/" class="underline hover:text-white/70">Politique de confidentialité</a></p></div></footer>
 </div>
-<script src="../app.js?v=3"></script><script src="../cities.js"></script><script src="../moon.js"></script><script src="../prayer.js"></script><script src="../init.js?v=3"></script>
-<!-- GDPR Cookie Consent -->
-</div>
-</div>
+<script src="../app.js?v=5"></script><script src="../cities.js?v=5"></script><script src="../moon.js?v=5"></script><script src="../prayer.js?v=5"></script><script src="../init.js?v=5"></script>
 </body></html>

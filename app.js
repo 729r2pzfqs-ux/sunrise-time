@@ -1,4 +1,4 @@
-// SunriseTi.me - Accurate Sun Position Calculator
+// WhenSunrise.com - Accurate Sun Position Calculator
 // Uses NOAA solar calculations for precise sunrise/sunset times
 
 const i18n = {
@@ -258,6 +258,7 @@ function toggleTimeFormat() {
         updateTimeline(sunTimes);
         update7DayForecast(currentLat, currentLng);
         updatePrayerTimesUI(currentLat, currentLng); // Refresh prayer times too
+        updateMoonUI(currentLat, currentLng); // Refresh moonrise/moonset too
     }
 }
 
@@ -329,12 +330,6 @@ function updateSkyGradient(sunTimes, lng) {
     const morningGoldenEndMs = sunriseMs + oneHour;
     const eveningGoldenStartMs = sunsetMs - oneHour;
     
-    console.log('Sky debug (local hours at location):', {
-        nowLocal: localHoursAtLocation.toFixed(2),
-        sunriseLocal: sunriseLocal.toFixed(2),
-        sunsetLocal: sunsetLocal.toFixed(2),
-        locationOffsetHours: locationOffsetHours.toFixed(1)
-    });
     
     // Determine sky state
     const isNight = nowMs < dawnMs || nowMs > duskEndMs;
@@ -344,10 +339,8 @@ function updateSkyGradient(sunTimes, lng) {
     const isEveningGolden = nowMs >= eveningGoldenStartMs && nowMs < sunsetMs;
     const isDusk = nowMs >= sunsetMs && nowMs <= duskEndMs;
     
-    console.log('Sky state:', { isNight, isDawn, isMorningGolden, isDay, isEveningGolden, isDusk });
     
     if (isNight) {
-        console.log('Setting NIGHT mode');
         body.classList.add('sky-night');
         setOpacity(stars, '1');
         setOpacity(clouds, '0');
@@ -412,13 +405,6 @@ function updateDayProgress(sunTimes, lng) {
     const dayLengthMs = sunsetMs - sunriseMs;
     const elapsedMs = nowMs - sunriseMs;
     
-    console.log('Progress debug (UTC):', { 
-        nowMs, sunriseMs, sunsetMs, 
-        elapsedMs, dayLengthMs,
-        nowUTC: new Date(nowMs).toISOString(),
-        sunriseUTC: sunTimes.sunrise.toISOString(),
-        sunsetUTC: sunTimes.sunset.toISOString()
-    });
     
     let progress = 0;
     
@@ -432,7 +418,6 @@ function updateDayProgress(sunTimes, lng) {
     
     const progressBar = document.getElementById('dayProgressBar');
     const progressText = document.getElementById('dayProgressPercent');
-    console.log('Setting progress:', Math.round(progress) + '%');
     if (progressBar) progressBar.style.width = `${progress}%`;
     if (progressText) progressText.textContent = `${Math.round(progress)}%`;
 }
@@ -475,10 +460,8 @@ function updateTimeline(sunTimes) {
 }
 
 function update7DayForecast(lat, lng) {
-    console.log('update7DayForecast called with:', { lat, lng });
     const forecast = document.getElementById('forecast');
-    if (!forecast) { console.log('No forecast element found'); return; }
-    console.log('Forecast element found');
+    if (!forecast) { return; }
     const days = [];
     const today = new Date();
     
@@ -499,7 +482,6 @@ function update7DayForecast(lat, lng) {
     }
     
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    console.log('7-day forecast days:', days);
     
     forecast.innerHTML = days.map((day, i) => {
         const hours = Math.floor(day.dayLength / 60);
@@ -587,7 +569,7 @@ function updateUI(lat, lng, locationName) {
     updateTimeline(sunTimes);
     
     // Update 7-day forecast
-    try { update7DayForecast(lat, lng); console.log('update7DayForecast done'); } catch(e) { console.error('update7DayForecast error:', e); }
+    try { update7DayForecast(lat, lng); } catch(e) { console.error('update7DayForecast error:', e); }
 }
 
 // ============== GEOLOCATION ==============
@@ -617,7 +599,6 @@ async function detectLocation() {
             },
             (error) => {
                 // Fallback to IP-based location or default
-                console.log('Geolocation denied, using default');
                 const input = document.getElementById('locationSearch');
                 if (input) input.value = 'Paris, France';
                 updateAll(48.8566, 2.3522, 'Paris, France');
@@ -636,7 +617,10 @@ async function searchCity(query) {
         const data = await response.json();
         if (data.length > 0) {
             const result = data[0];
-            updateUI(parseFloat(result.lat), parseFloat(result.lon), result.display_name.split(',').slice(0, 2).join(','));
+            const name = result.display_name.split(',').slice(0, 2).join(',');
+            const input = document.getElementById('locationSearch');
+            if (input) input.value = name;
+            updateAll(parseFloat(result.lat), parseFloat(result.lon), name);
         }
     } catch (e) {
         console.error('Search failed:', e);
@@ -754,7 +738,6 @@ function updateMoonUI(lat, lng) {
     // Upcoming events
     try {
         const events = getUpcomingLunarEvents(today, 4);
-        console.log('Lunar events:', events);
         const fullMoonEvent = events.find(e => e.type === 'Full Moon');
         const newMoonEvent = events.find(e => e.type === 'New Moon');
         
@@ -770,8 +753,8 @@ function updateMoonUI(lat, lng) {
         console.error('Lunar events error:', e);
     }
     
-    if (moonrise) moonrise.textContent = formatTime(moonTimes.moonrise);
-    if (moonset) moonset.textContent = formatTime(moonTimes.moonset);
+    if (moonrise) moonrise.textContent = formatTimeDisplay(moonTimes.moonrise, lng);
+    if (moonset) moonset.textContent = formatTimeDisplay(moonTimes.moonset, lng);
 }
 
 // ============== CITY SEARCH WITH AUTOCOMPLETE ==============
@@ -959,8 +942,7 @@ async function fetchWeather(lat, lng, locationName) {
     const tempEl = document.getElementById('currentTemp');
     const weatherEl = document.getElementById('weatherIcon');
     
-    console.log('fetchWeather called:', { lat, lng, locationName });
-    if (!tempEl) { console.log('No tempEl found'); return; }
+    if (!tempEl) { return; }
     
     // Set default unit based on location (US = Fahrenheit)
     if (isUSCity(locationName)) {
@@ -976,10 +958,8 @@ async function fetchWeather(lat, lng, locationName) {
     
     try {
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,weather_code&timezone=auto`;
-        console.log('Fetching weather:', url);
         const response = await fetch(url);
         const data = await response.json();
-        console.log('Weather response:', data);
         
         if (data.current) {
             currentTempCelsius = data.current.temperature_2m;
@@ -1030,14 +1010,13 @@ async function fetchWeather(lat, lng, locationName) {
 // ============== MAIN UPDATE FUNCTION ==============
 
 function updateAll(lat, lng, locationName) {
-    console.log('updateAll called:', { lat, lng, locationName });
     currentLocationName = locationName; // Store for time format detection
     initTimeFormat(locationName); // Initialize time format (US gets AM/PM by default)
-    try { updateUI(lat, lng, locationName); console.log('updateUI done'); } catch(e) { console.error('updateUI error:', e); }
-    try { updatePrayerTimesUI(lat, lng); console.log('updatePrayerTimesUI done'); } catch(e) { console.error('updatePrayerTimesUI error:', e); }
-    try { updateMoonUI(lat, lng); console.log('updateMoonUI done'); } catch(e) { console.error('updateMoonUI error:', e); }
-    try { fetchWeather(lat, lng, locationName); console.log('fetchWeather called'); } catch(e) { console.error('fetchWeather error:', e); }
-    try { updateCurrentTime(); console.log('updateCurrentTime done'); } catch(e) { console.error('updateCurrentTime error:', e); }
+    try { updateUI(lat, lng, locationName); } catch(e) { console.error('updateUI error:', e); }
+    try { updatePrayerTimesUI(lat, lng); } catch(e) { console.error('updatePrayerTimesUI error:', e); }
+    try { updateMoonUI(lat, lng); } catch(e) { console.error('updateMoonUI error:', e); }
+    try { fetchWeather(lat, lng, locationName); } catch(e) { console.error('fetchWeather error:', e); }
+    try { updateCurrentTime(); } catch(e) { console.error('updateCurrentTime error:', e); }
 }
 
 // Init is in init.js (loads last)

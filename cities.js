@@ -1,4 +1,4 @@
-// Top 500 cities worldwide with coordinates
+// ~115 major cities worldwide with coordinates
 const CITIES = [
     // Americas
     { name: "New York", country: "USA", lat: 40.7128, lng: -74.0060 },
