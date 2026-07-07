@@ -84,9 +84,51 @@
                 "name": "What are the Islamic prayer times?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Islamic prayer times (Fajr, Dhuhr, Asr, Maghrib, Isha) are calculated based on sun position. WhenSunrise.com provides accurate prayer times for any location using multiple calculation methods."
+                    "text": "Islamic prayer times (Fajr, Dhuhr, Asr, Maghrib, Isha) are calculated based on sun position. WhenSunrise.com provides accurate prayer times for any location using multiple calculation methods including ISNA, Muslim World League, Egypt, Umm al-Qura, and Karachi."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "When is golden hour today?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Golden hour occurs twice a day: shortly after sunrise and shortly before sunset, when the sun is low and the light is soft and warm — ideal for photography. WhenSunrise.com shows the exact morning and evening golden hour times for your location."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What is the moon phase tonight?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "The moon cycles through eight phases roughly every 29.5 days: new moon, waxing crescent, first quarter, waxing gibbous, full moon, waning gibbous, last quarter, and waning crescent. WhenSunrise.com shows tonight's moon phase, illumination percentage, moonrise and moonset times, and the dates of the next full and new moons."
                 }
             }
+        ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "WhenSunrise.com",
+        "url": "https://whensunrise.com/",
+        "description": "Free sunrise, sunset, prayer times, and moon phase calculator for any location worldwide.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript",
+        "inLanguage": ["en", "ar", "bn", "de", "es", "fr", "hi", "id", "ja", "ms", "pt", "ru", "tr", "ur", "zh"],
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "featureList": [
+            "Sunrise and sunset times for any city",
+            "Islamic prayer times (Fajr, Dhuhr, Asr, Maghrib, Isha) with 5 calculation methods",
+            "Moon phase, illumination, moonrise and moonset",
+            "Golden hour and blue hour times",
+            "Day length and solar noon",
+            "7-day sunrise and sunset forecast"
         ]
     }
     </script>
@@ -102,7 +144,7 @@
     <link rel="icon" type="image/svg+xml" href="/sun-icon.svg">
     <link rel="manifest" href="/site.webmanifest">
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/tailwind.css?v=1">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Custom SVG Icons -->
@@ -689,10 +731,10 @@
         </footer>
     </div>
 
-    <script src="app.js?v=5"></script>
-    <script src="cities.js?v=5"></script>
-    <script src="moon.js?v=5"></script>
-    <script src="prayer.js?v=5"></script>
-    <script src="init.js?v=5"></script>
+    <script src="app.js?v=6"></script>
+    <script src="cities.js?v=6"></script>
+    <script src="moon.js?v=6"></script>
+    <script src="prayer.js?v=6"></script>
+    <script src="init.js?v=6"></script>
 </body>
 </html>

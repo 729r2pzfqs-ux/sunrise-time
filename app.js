@@ -769,10 +769,10 @@ function setupCitySearch() {
     
     // Popular cities to show on focus
     const popularCities = [
-        { name: "New York", country: "USA", lat: 40.7128, lng: -74.0060 },
-        { name: "London", country: "UK", lat: 51.5074, lng: -0.1278 },
+        { name: "New York", country: "United States", lat: 40.7128, lng: -74.0060 },
+        { name: "London", country: "United Kingdom", lat: 51.5074, lng: -0.1278 },
         { name: "Tokyo", country: "Japan", lat: 35.6762, lng: 139.6503 },
-        { name: "Dubai", country: "UAE", lat: 25.2048, lng: 55.2708 },
+        { name: "Dubai", country: "United Arab Emirates", lat: 25.2048, lng: 55.2708 },
         { name: "Paris", country: "France", lat: 48.8566, lng: 2.3522 },
         { name: "Sydney", country: "Australia", lat: -33.8688, lng: 151.2093 },
         { name: "Mecca", country: "Saudi Arabia", lat: 21.3891, lng: 39.8579 },

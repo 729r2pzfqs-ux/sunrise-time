@@ -1,23 +1,23 @@
 // ~115 major cities worldwide with coordinates
 const CITIES = [
     // Americas
-    { name: "New York", country: "USA", lat: 40.7128, lng: -74.0060 },
-    { name: "Los Angeles", country: "USA", lat: 34.0522, lng: -118.2437 },
-    { name: "Chicago", country: "USA", lat: 41.8781, lng: -87.6298 },
-    { name: "Houston", country: "USA", lat: 29.7604, lng: -95.3698 },
-    { name: "Phoenix", country: "USA", lat: 33.4484, lng: -112.0740 },
-    { name: "Philadelphia", country: "USA", lat: 39.9526, lng: -75.1652 },
-    { name: "San Antonio", country: "USA", lat: 29.4241, lng: -98.4936 },
-    { name: "San Diego", country: "USA", lat: 32.7157, lng: -117.1611 },
-    { name: "Dallas", country: "USA", lat: 32.7767, lng: -96.7970 },
-    { name: "San Francisco", country: "USA", lat: 37.7749, lng: -122.4194 },
-    { name: "Austin", country: "USA", lat: 30.2672, lng: -97.7431 },
-    { name: "Seattle", country: "USA", lat: 47.6062, lng: -122.3321 },
-    { name: "Denver", country: "USA", lat: 39.7392, lng: -104.9903 },
-    { name: "Boston", country: "USA", lat: 42.3601, lng: -71.0589 },
-    { name: "Miami", country: "USA", lat: 25.7617, lng: -80.1918 },
-    { name: "Atlanta", country: "USA", lat: 33.7490, lng: -84.3880 },
-    { name: "Las Vegas", country: "USA", lat: 36.1699, lng: -115.1398 },
+    { name: "New York", country: "United States", lat: 40.7128, lng: -74.0060 },
+    { name: "Los Angeles", country: "United States", lat: 34.0522, lng: -118.2437 },
+    { name: "Chicago", country: "United States", lat: 41.8781, lng: -87.6298 },
+    { name: "Houston", country: "United States", lat: 29.7604, lng: -95.3698 },
+    { name: "Phoenix", country: "United States", lat: 33.4484, lng: -112.0740 },
+    { name: "Philadelphia", country: "United States", lat: 39.9526, lng: -75.1652 },
+    { name: "San Antonio", country: "United States", lat: 29.4241, lng: -98.4936 },
+    { name: "San Diego", country: "United States", lat: 32.7157, lng: -117.1611 },
+    { name: "Dallas", country: "United States", lat: 32.7767, lng: -96.7970 },
+    { name: "San Francisco", country: "United States", lat: 37.7749, lng: -122.4194 },
+    { name: "Austin", country: "United States", lat: 30.2672, lng: -97.7431 },
+    { name: "Seattle", country: "United States", lat: 47.6062, lng: -122.3321 },
+    { name: "Denver", country: "United States", lat: 39.7392, lng: -104.9903 },
+    { name: "Boston", country: "United States", lat: 42.3601, lng: -71.0589 },
+    { name: "Miami", country: "United States", lat: 25.7617, lng: -80.1918 },
+    { name: "Atlanta", country: "United States", lat: 33.7490, lng: -84.3880 },
+    { name: "Las Vegas", country: "United States", lat: 36.1699, lng: -115.1398 },
     { name: "Toronto", country: "Canada", lat: 43.6532, lng: -79.3832 },
     { name: "Vancouver", country: "Canada", lat: 49.2827, lng: -123.1207 },
     { name: "Montreal", country: "Canada", lat: 45.5017, lng: -73.5673 },
@@ -30,7 +30,7 @@ const CITIES = [
     { name: "Santiago", country: "Chile", lat: -33.4489, lng: -70.6693 },
     
     // Europe
-    { name: "London", country: "UK", lat: 51.5074, lng: -0.1278 },
+    { name: "London", country: "United Kingdom", lat: 51.5074, lng: -0.1278 },
     { name: "Paris", country: "France", lat: 48.8566, lng: 2.3522 },
     { name: "Berlin", country: "Germany", lat: 52.5200, lng: 13.4050 },
     { name: "Madrid", country: "Spain", lat: 40.4168, lng: -3.7038 },
@@ -53,7 +53,7 @@ const CITIES = [
     { name: "Budapest", country: "Hungary", lat: 47.4979, lng: 19.0402 },
     { name: "Zurich", country: "Switzerland", lat: 47.3769, lng: 8.5417 },
     { name: "Moscow", country: "Russia", lat: 55.7558, lng: 37.6173 },
-    { name: "St. Petersburg", country: "Russia", lat: 59.9343, lng: 30.3351 },
+    { name: "Saint Petersburg", country: "Russia", lat: 59.9343, lng: 30.3351 },
     { name: "Istanbul", country: "Turkey", lat: 41.0082, lng: 28.9784 },
     { name: "Ankara", country: "Turkey", lat: 39.9334, lng: 32.8597 },
     
@@ -86,8 +86,8 @@ const CITIES = [
     { name: "Taipei", country: "Taiwan", lat: 25.0330, lng: 121.5654 },
     
     // Middle East
-    { name: "Dubai", country: "UAE", lat: 25.2048, lng: 55.2708 },
-    { name: "Abu Dhabi", country: "UAE", lat: 24.4539, lng: 54.3773 },
+    { name: "Dubai", country: "United Arab Emirates", lat: 25.2048, lng: 55.2708 },
+    { name: "Abu Dhabi", country: "United Arab Emirates", lat: 24.4539, lng: 54.3773 },
     { name: "Riyadh", country: "Saudi Arabia", lat: 24.7136, lng: 46.6753 },
     { name: "Jeddah", country: "Saudi Arabia", lat: 21.4858, lng: 39.1925 },
     { name: "Mecca", country: "Saudi Arabia", lat: 21.3891, lng: 39.8579 },
@@ -126,15 +126,25 @@ const CITIES = [
     { name: "Wellington", country: "New Zealand", lat: -41.2865, lng: 174.7762 },
 ];
 
+// Common country abbreviations mapped to full names used in CITIES
+const COUNTRY_ALIASES = {
+    "usa": "United States", "us": "United States", "america": "United States",
+    "uk": "United Kingdom", "britain": "United Kingdom", "england": "United Kingdom",
+    "uae": "United Arab Emirates", "emirates": "United Arab Emirates",
+    "st. petersburg": "Saint Petersburg", "st petersburg": "Saint Petersburg"
+};
+
 // Search function with fuzzy matching
 function searchCities(query) {
     if (!query || query.length < 2) return [];
-    
+
     const q = query.toLowerCase();
+    const alias = (COUNTRY_ALIASES[q] || "").toLowerCase();
     return CITIES
-        .filter(city => 
-            city.name.toLowerCase().includes(q) || 
-            city.country.toLowerCase().includes(q)
+        .filter(city =>
+            city.name.toLowerCase().includes(q) ||
+            city.country.toLowerCase().includes(q) ||
+            (alias && (city.country.toLowerCase() === alias || city.name.toLowerCase() === alias))
         )
         .slice(0, 10)
         .map(city => ({

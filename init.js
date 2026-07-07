@@ -10,13 +10,13 @@ document.addEventListener('DOMContentLoaded', () => {
         updateAll(city.lat, city.lng, city.display);
     } else if (query) {
         document.getElementById('locationSearch').value = query;
-        updateAll(40.7128, -74.0060, 'New York, USA');
+        updateAll(40.7128, -74.0060, 'New York, United States');
         searchCity(query);
     } else {
         // Default to New York instead of requesting geolocation on page load
         // User can click the location button to detect their location
-        document.getElementById('locationSearch').value = 'New York, USA';
-        updateAll(40.7128, -74.0060, 'New York, USA');
+        document.getElementById('locationSearch').value = 'New York, United States';
+        updateAll(40.7128, -74.0060, 'New York, United States');
     }
     setupCitySearch();
     
